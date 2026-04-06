@@ -1,1 +1,1901 @@
-<!DOCTYPE html><html><head><title>SnapVisa</title></head><body><script>window.location="/"</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SnapVisa — Instant Visa & Passport Photos Online</title>
+<meta name="description" content="Get compliant visa and passport photos instantly. AI background removal. 21+ countries. Download in seconds.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F7F4EE;
+    --ink: #1A1916;
+    --ink2: #3D3B35;
+    --muted: #8A8880;
+    --border: #E2DED5;
+    --accent: #2B5CE6;
+    --accent-light: #EEF2FD;
+    --green: #1A7A4A;
+    --green-light: #E8F5EE;
+    --red: #C0392B;
+    --red-light: #FDECEA;
+    --white: #FFFFFF;
+    --radius: 12px;
+    --radius-lg: 20px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 2.5rem;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; color: var(--ink);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
+  nav .tagline { font-size: 13px; color: var(--muted); }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 3.5rem 1.5rem 2rem;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px; font-weight: 500;
+    padding: 4px 14px; border-radius: 99px;
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.02em;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero p { color: var(--ink2); font-size: 16px; font-weight: 300; }
+
+  /* MAIN CARD */
+  .main-card {
+    max-width: 700px;
+    margin: 0 auto 3rem;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  /* STEP TABS */
+  .step-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream);
+  }
+  .step-tab {
+    flex: 1; padding: 14px 12px;
+    font-size: 13px; font-weight: 500;
+    color: var(--muted);
+    text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    cursor: default;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+  }
+  .step-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--white); }
+  .step-tab.done { color: var(--green); cursor: pointer; }
+  .step-tab.done:hover { background: var(--green-light); }
+  .step-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--muted);
+    font-size: 11px; font-weight: 500;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .step-tab.active .step-num { background: var(--accent); color: white; }
+  .step-tab.done .step-num { background: var(--green); color: white; }
+
+  /* PANELS */
+  .panel { padding: 2rem; display: none; }
+  .panel.active { display: block; }
+
+  /* COUNTRY SELECT */
+  .search-row { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
+  .search-row input { flex: 1; min-width: 180px; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--white); color: var(--ink); }
+  .search-row input:focus { outline: none; border-color: var(--accent); }
+  .region-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .region-tab { padding: 5px 12px; border: 1px solid var(--border); border-radius: 99px; font-size: 12px; font-weight: 500; background: var(--white); color: var(--muted); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .region-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .region-tab.active { background: var(--accent); border-color: var(--accent); color: white; }
+  .country-count { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .country-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  .country-btn {
+    padding: 12px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--white);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .country-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+  .country-btn.selected { border-color: var(--accent); background: var(--accent-light); }
+  .country-flag { font-size: 22px; display: block; margin-bottom: 4px; }
+  .country-name { font-size: 13px; font-weight: 500; color: var(--ink); display: block; }
+  .country-spec { font-size: 11px; color: var(--muted); display: block; }
+  .selected-spec-box {
+    background: var(--accent-light);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+  .selected-spec-box.show { display: block; }
+  .spec-title { font-size: 13px; font-weight: 500; color: var(--accent); margin-bottom: 6px; }
+  .spec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .spec-item { font-size: 12px; color: var(--ink2); }
+  .spec-item span { display: block; font-weight: 500; color: var(--ink); }
+
+  /* UPLOAD MODE TABS */
+  .upload-tabs { display: flex; gap: 8px; margin-bottom: 1.25rem; }
+  .upload-tab { flex: 1; padding: 10px; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--white); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-align: center; }
+  .upload-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .upload-tab.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+
+  /* CAMERA */
+  .camera-wrap { position: relative; width: 100%; border-radius: var(--radius-lg); overflow: hidden; background: #111; aspect-ratio: 4/3; display: none; }
+  .camera-wrap.show { display: block; }
+  #camera-video { width: 100%; height: 100%; object-fit: cover; display: block; transform: scaleX(-1); }
+  .camera-overlay { position: absolute; inset: 0; pointer-events: none; }
+
+  /* VALIDATION PANEL */
+  .validation-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 10px 0; }
+  .check-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: var(--radius); background: var(--cream); border: 1px solid var(--border); font-size: 12px; transition: all 0.3s; }
+  .check-item.pass { background: var(--green-light); border-color: #5DCAA5; color: var(--green); }
+  .check-item.fail { background: var(--red-light); border-color: #F09595; color: var(--red); }
+  .check-item.warn { background: #FFF8E1; border-color: #FFD54F; color: #7B5800; }
+  .check-item.idle { color: var(--muted); }
+  .check-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); flex-shrink: 0; transition: background 0.3s; }
+  .check-item.pass .check-dot { background: var(--green); }
+  .check-item.fail .check-dot { background: var(--red); }
+  .check-item.warn .check-dot { background: #F9A825; }
+  .check-label { font-weight: 500; flex: 1; }
+  .check-status { font-size: 11px; opacity: 0.8; }
+
+  .camera-controls { display: none; flex-direction: column; align-items: center; gap: 8px; margin-top: 0.5rem; }
+  .camera-controls.show { display: flex; }
+  .capture-btn { width: 60px; height: 60px; border-radius: 50%; background: var(--white); border: 3px solid var(--border); cursor: not-allowed; transition: all 0.2s; display: flex; align-items: center; justify-content: center; font-size: 22px; opacity: 0.4; }
+  .capture-btn.ready { border-color: var(--green); background: var(--green-light); cursor: pointer; opacity: 1; }
+  .capture-btn.ready:hover { transform: scale(1.06); background: var(--green); }
+  .capture-hint { font-size: 12px; color: var(--muted); text-align: center; }
+  .capture-hint.ready { color: var(--green); font-weight: 500; }
+  .switch-cam-btn { font-size: 12px; color: var(--accent); background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; text-decoration: underline; }
+  .camera-error { background: var(--red-light); border: 1px solid var(--red); border-radius: var(--radius); padding: 12px 16px; font-size: 13px; color: var(--red); display: none; margin-top: 0.75rem; }
+  .camera-error.show { display: block; }
+  /* PHOTO EDITOR */
+  .editor-wrap { display:none; margin-bottom:1rem; }
+  .editor-wrap.show { display:block; }
+  .editor-layout { display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start; }
+  @media(max-width:500px){ .editor-layout { grid-template-columns:1fr; } }
+  .editor-preview-box { background:#111; border-radius:var(--radius-lg); overflow:hidden; aspect-ratio:3/4; display:flex; align-items:center; justify-content:center; position:relative; }
+  #editor-canvas { max-width:100%; max-height:100%; display:block; }
+  .editor-controls { display:flex; flex-direction:column; gap:10px; }
+  .editor-section { background:var(--cream); border-radius:var(--radius); padding:10px 12px; }
+  .editor-section-label { font-size:11px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px; }
+  .slider-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:12px; color:var(--ink2); }
+  .slider-row label { min-width:70px; }
+  .slider-row input[type=range] { flex:1; }
+  .slider-row span { min-width:30px; text-align:right; font-size:11px; color:var(--muted); }
+  .editor-btn-row { display:flex; gap:6px; flex-wrap:wrap; }
+  .editor-btn { padding:6px 12px; border:1px solid var(--border); border-radius:var(--radius); background:var(--white); font-size:12px; font-weight:500; color:var(--ink2); cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.15s; }
+  .editor-btn:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-light); }
+  .editor-actions { display:flex; gap:8px; margin-top:4px; }
+  .editor-check-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:6px; }
+  .editor-check-item { display:flex; align-items:center; gap:6px; font-size:11px; padding:5px 8px; border-radius:6px; }
+  .editor-check-item.pass { background:var(--green-light); color:var(--green); }
+  .editor-check-item.fail { background:var(--red-light); color:var(--red); }
+  .editor-check-item.warn { background:#FFF8E1; color:#7B5800; }
+  .editor-check-item.idle { background:var(--cream); color:var(--muted); }
+  .editor-check-item .cdot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .editor-check-item.pass .cdot { background:var(--green); }
+  .editor-check-item.fail .cdot { background:var(--red); }
+  .editor-check-item.warn .cdot { background:#F9A825; }
+  .editor-check-item.idle .cdot { background:var(--border); }
+
+  /* PREVENT CANVAS DOWNLOAD */
+  canvas { -webkit-user-select:none; user-select:none; -webkit-user-drag:none; }
+  .photo-preview-wrap { -webkit-user-select:none; user-select:none; }
+  .no-save { pointer-events:none; }
+  .canvas-shield { position:absolute; inset:0; z-index:10; cursor:default; }
+
+  /* BACKGROUND SWATCHES */
+  .bg-swatch { width:28px; height:28px; border-radius:50%; border:2px solid var(--border); cursor:pointer; padding:0; transition:all 0.15s; flex-shrink:0; position:relative; }
+  .bg-swatch:hover { border-color:var(--accent); transform:scale(1.15); }
+  .bg-swatch.active { border-color:var(--accent); border-width:2.5px; box-shadow:0 0 0 2px var(--accent-light); }
+
+  /* BRUSH TOOL */
+  .brush-tool-active { cursor: crosshair !important; }
+  .brush-mode-btn { padding:6px 10px; border:1.5px solid var(--border); border-radius:var(--radius); background:var(--white); font-size:11px; font-weight:500; color:var(--ink2); cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.15s; flex:1; text-align:center; }
+  .brush-mode-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .brush-mode-btn.active { background:var(--accent); border-color:var(--accent); color:white; }
+  .brush-mode-btn.active:hover { opacity:0.88; }
+
+  /* UPLOAD CHECK PANEL — kept for legacy compatibility */
+  .upload-check-panel { display: none; }
+
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--cream);
+    position: relative;
+  }
+  .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: var(--accent-light); }
+  .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .upload-icon {
+    width: 56px; height: 56px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 24px;
+  }
+  .upload-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+  .upload-sub { font-size: 13px; color: var(--muted); }
+
+  /* PROCESSING */
+  .processing-box {
+    text-align: center; padding: 2rem;
+    display: none;
+  }
+  .processing-box.show { display: block; }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 1rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .progress-steps { display: flex; flex-direction: column; gap: 8px; text-align: left; max-width: 300px; margin: 1.5rem auto 0; }
+  .progress-step { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+  .progress-step.done { color: var(--green); }
+  .progress-step.active { color: var(--ink); font-weight: 500; }
+  .step-icon { width: 20px; height: 20px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+  .progress-step.done .step-icon { background: var(--green); color: white; }
+  .progress-step.active .step-icon { background: var(--accent); color: white; }
+
+  /* RESULT */
+  .result-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+  @media (max-width: 540px) { .result-layout { grid-template-columns: 1fr; } }
+  .photo-preview-wrap {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .photo-preview-wrap canvas {
+    max-width: 100%;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .photo-label { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .result-info { display: flex; flex-direction: column; gap: 12px; }
+  .info-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-key { color: var(--muted); }
+  .info-val { font-weight: 500; color: var(--ink); }
+  .badge-pass { background: var(--green-light); color: var(--green); font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 99px; }
+  .badge-fail { background: var(--red-light); color: var(--red); font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 99px; }
+
+  /* PAYWALL */
+  .paywall-box {
+    margin-top: 1.5rem;
+    background: var(--ink);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    color: white;
+  }
+  .paywall-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 6px; }
+  .paywall-sub { font-size: 13px; color: #aaa; margin-bottom: 1.25rem; }
+  .price-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+  .price-opt {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius);
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+    color: white;
+  }
+  .price-opt:hover { background: rgba(255,255,255,0.15); }
+  .price-opt.selected { border-color: var(--accent); background: rgba(43,92,230,0.3); }
+  .price-opt-name { font-size: 12px; color: #aaa; display: block; margin-bottom: 2px; }
+  .price-opt-price { font-size: 18px; font-weight: 500; display: block; }
+  .price-opt-desc { font-size: 11px; color: #888; display: block; margin-top: 2px; }
+  .pay-btn {
+    width: 100%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 14px;
+    font-size: 15px; font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity 0.15s;
+  }
+  .pay-btn:hover { opacity: 0.9; }
+  .pay-note { font-size: 11px; color: #666; text-align: center; margin-top: 8px; }
+
+  /* DOWNLOAD SUCCESS */
+  .success-box {
+    text-align: center; padding: 2rem;
+    background: var(--green-light);
+    border: 1px solid var(--green);
+    border-radius: var(--radius-lg);
+    display: none;
+  }
+  .success-box.show { display: block; }
+  .success-icon { font-size: 36px; margin-bottom: 0.75rem; }
+  .success-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--green); margin-bottom: 0.5rem; }
+  .download-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 12px 28px;
+    background: var(--green);
+    color: white;
+    border: none; border-radius: var(--radius);
+    font-size: 14px; font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: none;
+  }
+
+  /* TIPS */
+  .tips-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 1.5rem; }
+  @media (max-width: 500px) { .tips-row { grid-template-columns: 1fr; } .country-grid { grid-template-columns: repeat(2,1fr); } }
+  .tip { background: var(--cream); border-radius: var(--radius); padding: 12px; }
+  .tip-icon { font-size: 18px; margin-bottom: 4px; }
+  .tip-text { font-size: 12px; color: var(--ink2); }
+
+  /* BTN */
+  .btn-primary {
+    background: var(--accent); color: white;
+    border: none; border-radius: var(--radius);
+    padding: 13px 28px;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-primary:disabled { opacity: 0.4; cursor: default; }
+  .btn-ghost {
+    background: none; color: var(--ink2);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 12px 20px; font-size: 14px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-ghost:hover { background: var(--cream); }
+  .btn-row-footer { display: flex; gap: 10px; margin-top: 1.5rem; justify-content: flex-end; }
+
+  /* API KEY BANNER */
+  .api-banner {
+    background: #FFF8E1;
+    border: 1px solid #FFD54F;
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #5D4037;
+    margin-bottom: 1.5rem;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .api-banner input {
+    display: block; width: 100%; margin-top: 8px;
+    padding: 8px 10px; border: 1px solid #FFD54F; border-radius: 8px;
+    font-size: 13px; background: white; font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+  }
+
+  /* WATERMARK OVERLAY ON PREVIEW */
+  .watermark-overlay {
+    position: relative; display: inline-block;
+  }
+  .watermark-overlay::after {
+    content: 'PREVIEW';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 28px; font-weight: 700;
+    color: rgba(255,255,255,0.55);
+    pointer-events: none;
+    letter-spacing: 4px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* FOOTER */
+  footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); background: var(--white); }
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><div class="logo-dot"></div>SnapVisa</div>
+  <span class="tagline">Official-spec visa &amp; passport photos, instantly</span>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Powered by AI · Print at home or any photo lab worldwide</div>
+  <h1>Visa photos <em>done right</em>,<br>in under a minute</h1>
+  <p>Take or upload a photo. We handle the background, sizing, and compliance — for 21+ countries.</p>
+</div>
+
+<div class="main-card">
+
+  <!-- STEP TABS -->
+  <div class="step-tabs">
+    <div class="step-tab active" id="tab-1" onclick="navigateToTab(1)"><div class="step-num">1</div><span>Region / Country</span></div>
+    <div class="step-tab" id="tab-2" onclick="navigateToTab(2)"><div class="step-num">2</div><span>Your photo</span></div>
+    <div class="step-tab" id="tab-3" onclick="navigateToTab(3)"><div class="step-num">3</div><span>Download</span></div>
+  </div>
+
+  <!-- PANEL 1: COUNTRY -->
+  <div class="panel active" id="panel-1">
+    <div class="api-banner" id="api-banner">
+      <div>
+        <strong>Developer mode</strong> — Enter your <a href="https://www.remove.bg/api" target="_blank">remove.bg API key</a> to enable live background removal. Leave blank for demo mode.
+        <input type="password" id="api-key-input" placeholder="Your remove.bg API key..." />
+      </div>
+    </div>
+    <h3 style="font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:1rem;">Select your region &amp; document type</h3>
+    <div class="search-row"><input type="text" id="country-search" placeholder="Search country or document..." oninput="filterCountries()" /></div>
+    <div class="region-tabs">
+      <button class="region-tab active" onclick="setRegion('all',this)">All</button>
+      <button class="region-tab" onclick="setRegion('europe',this)">Europe</button>
+      <button class="region-tab" onclick="setRegion('americas',this)">Americas</button>
+      <button class="region-tab" onclick="setRegion('asia',this)">Asia</button>
+      <button class="region-tab" onclick="setRegion('middleeast',this)">Middle East</button>
+      <button class="region-tab" onclick="setRegion('oceania',this)">Oceania</button>
+      <button class="region-tab" onclick="setRegion('africa',this)">Africa</button>
+    </div>
+    <div class="country-count" id="country-count">21 document types</div>
+    <div class="country-grid" id="country-grid"></div>
+
+    <div id="selection-cta" style="display:none;margin-top:1rem;">
+      <div style="background:var(--white);border:2px solid var(--accent);border-radius:var(--radius-lg);overflow:hidden;">
+        <div style="background:var(--accent-light);padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--accent);">
+          <div style="font-size:28px;" id="cta-flag"></div>
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:500;color:var(--accent);" id="cta-doc"></div>
+            <div style="font-size:12px;color:#4a6fc7;margin-top:1px;" id="cta-spec-summary"></div>
+          </div>
+          <button onclick="clearSelection()" style="background:none;border:none;color:#4a6fc7;cursor:pointer;font-size:18px;padding:4px;">×</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);">
+          <div style="padding:10px 12px;border-right:1px solid var(--border);text-align:center;"><div style="font-size:11px;color:var(--muted);margin-bottom:2px;">Size</div><div style="font-size:13px;font-weight:500;" id="cta-size"></div></div>
+          <div style="padding:10px 12px;border-right:1px solid var(--border);text-align:center;"><div style="font-size:11px;color:var(--muted);margin-bottom:2px;">Resolution</div><div style="font-size:13px;font-weight:500;" id="cta-dpi"></div></div>
+          <div style="padding:10px 12px;border-right:1px solid var(--border);text-align:center;"><div style="font-size:11px;color:var(--muted);margin-bottom:2px;">Background</div><div style="font-size:12px;font-weight:500;" id="cta-bg"></div></div>
+          <div style="padding:10px 12px;text-align:center;"><div style="font-size:11px;color:var(--muted);margin-bottom:2px;">Head height</div><div style="font-size:13px;font-weight:500;" id="cta-head"></div></div>
+        </div>
+        <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <a id="cta-official-link" href="#" target="_blank" style="font-size:12px;color:var(--muted);text-decoration:none;flex:1;">View official requirements ↗</a>
+          <button onclick="goToStep(2)" style="background:var(--accent);color:white;border:none;border-radius:var(--radius);padding:13px 28px;font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">Continue with this document →</button>
+        </div>
+      </div>
+    </div>
+    <div id="idle-prompt" style="text-align:center;padding:1.5rem;color:var(--muted);font-size:13px;border:2px dashed var(--border);border-radius:var(--radius-lg);margin-top:1rem;">
+      Select a region and document type above to continue
+    </div>
+  </div>
+
+  <!-- PANEL 2: PHOTO -->
+  <div class="panel" id="panel-2" style="padding:0;">
+    <!-- Context bar -->
+    <div id="p2-context-bar" style="display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--accent-light);border-bottom:1px solid var(--accent);flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+        <span style="font-size:20px;" id="p2-flag"></span>
+        <div><div style="font-size:13px;font-weight:500;color:var(--accent);" id="p2-doc"></div><div style="font-size:11px;color:#4a6fc7;" id="p2-spec"></div></div>
+      </div>
+      <button onclick="goBackTo(1)" style="flex-shrink:0;padding:7px 13px;background:var(--white);border:1.5px solid var(--accent);border-radius:var(--radius);font-size:12px;font-weight:500;color:var(--accent);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">← Change region / country</button>
+    </div>
+    <div style="padding:2rem;">
+      <h3 style="font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:0.5rem;">Your photo</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">Upload a photo or use your camera. Face forward, neutral expression.</p>
+
+      <!-- Tabs -->
+      <div class="upload-tabs">
+        <button class="upload-tab active" id="tab-upload-btn" onclick="switchToUpload()">📁 Upload a photo</button>
+        <button class="upload-tab" id="tab-camera-btn" onclick="switchToCamera()">📷 Use camera</button>
+      </div>
+
+      <!-- UPLOAD ZONE -->
+      <div id="upload-section">
+        <div id="upload-zone" style="border:2px dashed var(--border);border-radius:var(--radius-lg);padding:3rem 2rem;text-align:center;cursor:pointer;background:var(--cream);transition:all 0.2s;" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault();this.style.borderColor='#2B5CE6'" ondragleave="this.style.borderColor=''" ondrop="handleDrop(event)">
+          <div style="width:56px;height:56px;background:white;border:1px solid var(--border);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:24px;">📷</div>
+          <div style="font-size:16px;font-weight:500;margin-bottom:4px;">Drop your photo here</div>
+          <div style="font-size:13px;color:var(--muted);">or click to browse · JPG, PNG, WEBP · max 10MB</div>
+        </div>
+        <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="handleFileSelect(this.files[0])">
+      </div>
+
+      <!-- CAMERA SECTION -->
+      <div id="camera-section" style="display:none;">
+        <div style="position:relative;background:#111;border-radius:var(--radius-lg);overflow:hidden;aspect-ratio:4/3;">
+          <video id="camera-video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block;"></video>
+          <canvas id="camera-overlay" style="position:absolute;inset:0;pointer-events:none;"></canvas>
+        </div>
+        <div id="camera-error" style="display:none;background:var(--red-light);border:1px solid var(--red);border-radius:var(--radius);padding:12px;font-size:13px;color:var(--red);margin-top:8px;">Camera not available — please use the upload option instead.</div>
+        <!-- Live checks -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0;" id="cam-checks">
+          <div class="check-item idle" id="cc-face"><div class="check-dot"></div><span class="check-label">Face detected</span><span class="check-status" id="cc-face-s">Waiting…</span></div>
+          <div class="check-item idle" id="cc-centre"><div class="check-dot"></div><span class="check-label">Face centred</span><span class="check-status" id="cc-centre-s">Waiting…</span></div>
+          <div class="check-item idle" id="cc-blur"><div class="check-dot"></div><span class="check-label">Sharp</span><span class="check-status" id="cc-blur-s">Waiting…</span></div>
+          <div class="check-item idle" id="cc-light"><div class="check-dot"></div><span class="check-label">Lighting</span><span class="check-status" id="cc-light-s">Waiting…</span></div>
+          <div class="check-item idle" id="cc-eyes"><div class="check-dot"></div><span class="check-label">Eyes forward</span><span class="check-status" id="cc-eyes-s">Waiting…</span></div>
+          <div class="check-item idle" id="cc-glasses"><div class="check-dot"></div><span class="check-label">No glare</span><span class="check-status" id="cc-glasses-s">Waiting…</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <button id="capture-btn" onclick="captureFromCamera()" disabled style="width:60px;height:60px;border-radius:50%;background:var(--white);border:3px solid var(--border);font-size:22px;cursor:not-allowed;opacity:0.4;transition:all 0.2s;">📸</button>
+          <div id="capture-hint" style="font-size:12px;color:var(--muted);text-align:center;">Align your face with the guide</div>
+          <button onclick="flipCamera()" style="font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:underline;">Switch camera</button>
+        </div>
+      </div>
+
+      <!-- EDITOR (shown after photo selected) -->
+      <div id="editor-section" style="display:none;">
+        <div style="font-family:'DM Serif Display',serif;font-size:16px;margin-bottom:10px;">Review &amp; adjust your photo</div>
+        <div class="editor-layout">
+          <!-- Preview -->
+          <div>
+            <div style="background:#111;border-radius:var(--radius-lg);overflow:hidden;position:relative;" id="editor-preview-box">
+              <canvas id="editor-canvas" style="display:block;max-width:100%;max-height:420px;"></canvas>
+              <canvas id="brush-canvas" style="position:absolute;top:0;left:0;cursor:crosshair;display:block;"></canvas>
+            </div>
+            <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px;" id="editor-spec-label"></div>
+          </div>
+          <!-- Controls -->
+          <div class="editor-controls">
+            <!-- Adjust -->
+            <div class="editor-section">
+              <div class="editor-section-label">Adjust</div>
+              <div class="slider-row"><label>Brightness</label><input type="range" id="adj-brightness" min="-80" max="80" value="0" oninput="redrawEditor()"><span id="lbl-brightness">0</span></div>
+              <div class="slider-row"><label>Contrast</label><input type="range" id="adj-contrast" min="-60" max="60" value="0" oninput="redrawEditor()"><span id="lbl-contrast">0</span></div>
+              <div class="slider-row"><label>Zoom</label><input type="range" id="adj-zoom" min="80" max="200" value="100" oninput="redrawEditor()"><span id="lbl-zoom">100%</span></div>
+            </div>
+            <!-- Transform -->
+            <div class="editor-section">
+              <div class="editor-section-label">Transform</div>
+              <div class="editor-btn-row">
+                <button class="editor-btn" onclick="rotateEditor(-90)">↺ Left</button>
+                <button class="editor-btn" onclick="rotateEditor(90)">↻ Right</button>
+                <button class="editor-btn" onclick="flipEditor()">⇄ Flip</button>
+                <button class="editor-btn" onclick="resetEditor()">Reset</button>
+              </div>
+            </div>
+            <!-- Touch-up brush -->
+            <div class="editor-section">
+              <div class="editor-section-label">Touch-up brush</div>
+              <div style="display:flex;gap:5px;margin-bottom:8px;">
+                <button class="brush-mode-btn active" id="bm-heal"    onclick="setBrushMode('heal',this)"    title="Smooth blemishes or spots">Heal</button>
+                <button class="brush-mode-btn"        id="bm-lighten" onclick="setBrushMode('lighten',this)" title="Brighten dark shadows">Lighten</button>
+                <button class="brush-mode-btn"        id="bm-darken"  onclick="setBrushMode('darken',this)"  title="Darken bright spots or glare">Darken</button>
+                <button class="brush-mode-btn"        id="bm-blur"    onclick="setBrushMode('blur',this)"    title="Soften an area">Soften</button>
+              </div>
+              <div class="slider-row" style="margin-bottom:5px;">
+                <label>Size</label>
+                <input type="range" id="brush-size" min="4" max="60" value="16" step="1" oninput="document.getElementById('lbl-bsize').textContent=this.value+'px'">
+                <span id="lbl-bsize">16px</span>
+              </div>
+              <div class="slider-row" style="margin-bottom:8px;">
+                <label>Strength</label>
+                <input type="range" id="brush-strength" min="5" max="80" value="30" step="1" oninput="document.getElementById('lbl-bstr').textContent=this.value+'%'">
+                <span id="lbl-bstr">30%</span>
+              </div>
+              <div style="display:flex;gap:6px;">
+                <button class="editor-btn" style="flex:1;" onclick="undoBrushStroke()">↩ Undo</button>
+                <button class="editor-btn" style="flex:1;" onclick="clearBrush()">Clear all</button>
+              </div>
+              <div style="font-size:11px;color:var(--muted);margin-top:6px;">Paint directly on the photo ←</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Photo checks -->
+        <div style="margin-top:12px;">
+          <div style="font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Photo checks</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;" id="upload-checks">
+            <div class="editor-check-item idle" id="uc-face"><div class="cdot"></div>Face detected</div>
+            <div class="editor-check-item idle" id="uc-centre"><div class="cdot"></div>Face centred</div>
+            <div class="editor-check-item idle" id="uc-blur"><div class="cdot"></div>Sharp</div>
+            <div class="editor-check-item idle" id="uc-light"><div class="cdot"></div>Lighting</div>
+            <div class="editor-check-item idle" id="uc-eyes"><div class="cdot"></div>Eyes forward</div>
+            <div class="editor-check-item idle" id="uc-glasses"><div class="cdot"></div>No glare</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button onclick="resetToUpload()" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--white);font-size:13px;font-weight:500;color:var(--ink2);cursor:pointer;font-family:'DM Sans',sans-serif;">↩ Upload again</button>
+          <button onclick="processPhoto()" style="flex:1;padding:10px;border:none;border-radius:var(--radius);background:var(--accent);color:white;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;">Process photo →</button>
+        </div>
+      </div>
+
+      <!-- PROCESSING -->
+      <div id="processing-section" style="display:none;text-align:center;padding:2rem;">
+        <div class="spinner" style="margin:0 auto 1rem;"></div>
+        <div style="font-size:15px;font-weight:500;" id="processing-msg">Processing your photo…</div>
+        <div class="progress-steps" id="progress-steps">
+          <div class="progress-step" id="ps-1"><div class="step-icon">→</div>Analysing photo</div>
+          <div class="progress-step" id="ps-2"><div class="step-icon">→</div>Removing background</div>
+          <div class="progress-step" id="ps-3"><div class="step-icon">→</div>Cropping to spec</div>
+          <div class="progress-step" id="ps-4"><div class="step-icon">→</div>Quality check</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 3: RESULT -->
+  <div class="panel" id="panel-3">
+    <div id="result-area">
+      <div class="result-layout">
+        <div>
+          <div class="photo-preview-wrap">
+            <div style="position:relative;display:inline-block;" id="watermark-wrap">
+              <canvas id="preview-canvas" oncontextmenu="return false;" ondragstart="return false;"></canvas>
+              <div style="position:absolute;inset:0;z-index:10;" oncontextmenu="return false;" ondragstart="return false;"></div>
+            </div>
+            <div class="photo-label" id="preview-label">Preview</div>
+          </div>
+        </div>
+        <div class="result-info">
+          <div style="font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:0.25rem;">Your photo is ready</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:0.75rem;">Review before purchasing</div>
+          <div class="info-row"><span class="info-key">Document</span><span class="info-val" id="r-doc">—</span></div>
+          <div class="info-row"><span class="info-key">Output size</span><span class="info-val" id="r-size">—</span></div>
+          <div class="info-row"><span class="info-key">Background</span><span class="info-val" id="r-bg">White (official spec)</span></div>
+          <div class="info-row"><span class="info-key">Compliance</span><span class="info-val"><span class="badge-pass">✓ Passed</span></span></div>
+          <div class="info-row"><span class="info-key">Print ready</span><span class="info-val"><span class="badge-pass">✓ Yes</span></span></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;flex-wrap:wrap;">
+        <div><div style="font-size:13px;font-weight:500;">Not happy with the result?</div><div style="font-size:12px;color:var(--muted);margin-top:2px;">Try a different photo or adjust settings.</div></div>
+        <div style="display:flex;gap:8px;flex-shrink:0;">
+          <button onclick="goBackTo(1)" style="padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--white);font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">← Change region / country</button>
+          <button onclick="goBackTo(2)" style="padding:7px 14px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--white);font-size:13px;font-weight:500;color:var(--ink2);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">Try another photo</button>
+        </div>
+      </div>
+
+      <div class="paywall-box" id="paywall-box">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:8px;">
+          <div class="paywall-title" style="margin-bottom:0;">Download your photo</div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:12px;color:#aaa;">Currency:</span>
+            <select id="currency-select" onchange="updatePrices()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-size:13px;padding:4px 8px;cursor:pointer;font-family:'DM Sans',sans-serif;">
+              <option value="GBP">🇬🇧 GBP £</option>
+              <option value="USD">🇺🇸 USD $</option>
+              <option value="EUR">🇪🇺 EUR €</option>
+              <option value="HKD">🇭🇰 HKD HK$</option>
+              <option value="TWD">🇹🇼 TWD NT$</option>
+              <option value="AUD">🇦🇺 AUD A$</option>
+              <option value="CAD">🇨🇦 CAD C$</option>
+              <option value="SGD">🇸🇬 SGD S$</option>
+              <option value="INR">🇮🇳 INR ₹</option>
+              <option value="JPY">🇯🇵 JPY ¥</option>
+              <option value="CNY">🇨🇳 CNY ¥</option>
+              <option value="MYR">🇲🇾 MYR RM</option>
+              <option value="AED">🇦🇪 AED</option>
+              <option value="NZD">🇳🇿 NZD NZ$</option>
+            </select>
+          </div>
+        </div>
+        <div class="paywall-sub">Remove the watermark and get your print-ready file</div>
+        <div class="price-options">
+          <div class="price-opt selected" id="opt-single" onclick="selectPrice('single')">
+            <span class="price-opt-name">Single photo</span>
+            <span class="price-opt-price" id="price-single">£1.99</span>
+            <span class="price-opt-desc">Full-res JPG + PDF sheet</span>
+          </div>
+          <div class="price-opt" id="opt-bundle" onclick="selectPrice('bundle')">
+            <span class="price-opt-name">5-photo bundle</span>
+            <span class="price-opt-price" id="price-bundle">£4.99</span>
+            <span class="price-opt-desc">Any 5 photos, 30 days</span>
+          </div>
+        </div>
+        <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;" id="disclaimer-box">
+          <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+            <input type="checkbox" id="disclaimer-check" style="margin-top:3px;flex-shrink:0;cursor:pointer;" onchange="this.closest('#disclaimer-box').style.border='1px solid rgba(255,255,255,0.15)'">
+            <span style="font-size:12px;color:#ccc;line-height:1.5;">I confirm I have reviewed my photo and it meets requirements. I understand <strong style="color:white;">all sales are final — no refunds</strong> once the download is provided.</span>
+          </label>
+        </div>
+        <button class="pay-btn" id="pay-btn" onclick="doPayment()">Pay with Stripe →</button>
+        <div class="pay-note">🔒 You'll be taken to Stripe's secure checkout to enter card details · Instant download after payment · No refunds after download</div>
+      </div>
+    </div>
+
+    <div class="success-box" id="success-box">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Download ready!</div>
+      <div style="font-size:14px;color:var(--green);">Payment confirmed. Your photo is print-ready.</div>
+      <a id="download-link" class="download-btn" download="visa-photo.jpg">Download photo</a>
+      <div style="margin-top:1rem;font-size:12px;color:var(--muted);">Print at any photo lab or at home</div>
+      <button onclick="resetApp()" class="btn-ghost" style="margin-top:1rem;">Create another photo</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- HOW IT WORKS -->
+<div style="max-width:700px;margin:0 auto 3rem;padding:0 1rem;">
+  <h2 style="font-family:'DM Serif Display',serif;font-size:24px;text-align:center;margin-bottom:1.5rem;">How it works</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+    <div style="text-align:center;padding:1.5rem 1rem;background:white;border:1px solid var(--border);border-radius:var(--radius-lg);"><div style="font-size:32px;margin-bottom:0.75rem;">📸</div><div style="font-weight:500;margin-bottom:4px;">Take or upload</div><div style="font-size:13px;color:var(--muted);">Any background works.</div></div>
+    <div style="text-align:center;padding:1.5rem 1rem;background:white;border:1px solid var(--border);border-radius:var(--radius-lg);"><div style="font-size:32px;margin-bottom:0.75rem;">🤖</div><div style="font-weight:500;margin-bottom:4px;">AI processes it</div><div style="font-size:13px;color:var(--muted);">Background removed, resized to spec.</div></div>
+    <div style="text-align:center;padding:1.5rem 1rem;background:white;border:1px solid var(--border);border-radius:var(--radius-lg);"><div style="font-size:32px;margin-bottom:0.75rem;">🖨️</div><div style="font-weight:500;margin-bottom:4px;">Print anywhere</div><div style="font-size:13px;color:var(--muted);">Download instantly.</div></div>
+  </div>
+</div>
+
+<div style="max-width:700px;margin:0 auto 3rem;padding:0 1rem;">
+  <h2 style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:0.5rem;">Visa photo guides by country</h2>
+  <p style="font-size:14px;color:#8A8880;margin-bottom:1.25rem;">Official size requirements for every country we support</p>
+  <div id="seo-links-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;"></div>
+</div>
+
+<footer>
+  &copy; 2025 SnapVisa &nbsp;·&nbsp; <a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Terms</a> &nbsp;·&nbsp; <a href="#">Contact</a>
+  <div style="margin-top:4px;font-size:11px;color:#aaa;">Supporting 21 countries worldwide</div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════
+// COUNTRY SPECS
+// ═══════════════════════════════════════════
+const SPECS = [
+  // EUROPE
+  { id:'uk-passport', flag:'🇬🇧', name:'UK Passport', doc:'UK Passport / Driving Licence', w:35, h:45, dpi:600, bg:'Plain light grey or cream', head:'29–34mm', bgColor:'#F5F5F0', region:'europe', seoKeyword:'uk passport photo online', verified:'Jan 2025', officialUrl:'https://www.gov.uk/photos-for-passports' },
+  { id:'schengen', flag:'🇪🇺', name:'Schengen Visa', doc:'Schengen / EU Visa', w:35, h:45, dpi:300, bg:'Plain white or off-white', head:'32–36mm', bgColor:'#FAFAFA', region:'europe', seoKeyword:'schengen visa photo online', verified:'Jan 2025', officialUrl:'https://home-affairs.ec.europa.eu/system/files/2021-01/annex_37b_icao_photograph_specifications_en.pdf' },
+  { id:'germany', flag:'🇩🇪', name:'Germany', doc:'German Passport / National Visa', w:35, h:45, dpi:300, bg:'Plain light grey', head:'32–36mm', bgColor:'#F5F5F2', region:'europe', seoKeyword:'german passport photo online', verified:'Jan 2025', officialUrl:'https://www.bmi.bund.de/EN/topics/security/identification-documents/passports-identity-cards/passport-photos/passport-photos-node.html' },
+  { id:'france', flag:'🇫🇷', name:'France', doc:'French Passport / Visa', w:35, h:45, dpi:300, bg:'Plain grey or white', head:'32–36mm', bgColor:'#F5F5F5', region:'europe', seoKeyword:'french passport photo online', verified:'Jan 2025', officialUrl:'https://france-visas.gouv.fr/en/web/france-visas/preparing-your-application' },
+  { id:'ireland', flag:'🇮🇪', name:'Ireland', doc:'Irish Passport', w:35, h:45, dpi:300, bg:'Plain white or off-white', head:'29–34mm', bgColor:'#FAFAFA', region:'europe', seoKeyword:'irish passport photo online', verified:'Jan 2025', officialUrl:'https://www.dfa.ie/passportinfo/how-to-apply/photo-guidelines/' },
+  // AMERICAS
+  { id:'us-visa', flag:'🇺🇸', name:'US Visa / Passport', doc:'US Visa / Passport', w:51, h:51, dpi:300, bg:'Plain white', head:'25–35mm', bgColor:'#FFFFFF', region:'americas', seoKeyword:'us passport photo online', verified:'Jan 2025', officialUrl:'https://travel.state.gov/content/travel/en/passports/need-passport/photos.html' },
+  { id:'canada', flag:'🇨🇦', name:'Canada', doc:'Canada eTA / Passport', w:50, h:70, dpi:300, bg:'Plain white', head:'31–36mm', bgColor:'#FFFFFF', region:'americas', seoKeyword:'canada passport photo online', verified:'Jan 2025', officialUrl:'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html' },
+  { id:'brazil', flag:'🇧🇷', name:'Brazil', doc:'Brazilian Passport / Visa', w:30, h:40, dpi:300, bg:'Plain white', head:'25–32mm', bgColor:'#FFFFFF', region:'americas', seoKeyword:'brazil visa photo online', verified:'Jan 2025', officialUrl:'https://www.gov.br/pf/en/subjects/passport/requirements' },
+  // ASIA
+  { id:'india-visa', flag:'🇮🇳', name:'India', doc:'India Visa / OCI / Passport', w:51, h:51, dpi:300, bg:'Plain white', head:'26–35mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'india visa photo online', verified:'Jan 2025', officialUrl:'https://indianvisaonline.gov.in/visa/PhotoRequirements.pdf' },
+  { id:'china-visa', flag:'🇨🇳', name:'China', doc:'China Visa', w:33, h:48, dpi:300, bg:'Plain white', head:'28–33mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'china visa photo online', verified:'Jan 2025', officialUrl:'https://www.visaforchina.cn/globle/applicants_guide/photo_specifications/' },
+  { id:'japan', flag:'🇯🇵', name:'Japan', doc:'Japan Visa', w:45, h:45, dpi:300, bg:'Plain white', head:'30–36mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'japan visa photo online', verified:'Jan 2025', officialUrl:'https://www.mofa.go.jp/j_info/visit/visa/index.html' },
+  { id:'thailand', flag:'🇹🇭', name:'Thailand', doc:'Thailand Visa / e-Visa', w:35, h:45, dpi:300, bg:'Plain white', head:'27–35mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'thailand visa photo online', verified:'Jan 2025', officialUrl:'https://www.thaievisa.go.th' },
+  { id:'philippines', flag:'🇵🇭', name:'Philippines', doc:'Philippines Passport / Visa', w:35, h:45, dpi:300, bg:'Plain white', head:'28–34mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'philippines passport photo online', verified:'Jan 2025', officialUrl:'https://dfa.gov.ph/passport/passport-requirements' },
+  { id:'pakistan', flag:'🇵🇰', name:'Pakistan', doc:'Pakistan Visa / Passport', w:35, h:45, dpi:300, bg:'Plain white', head:'29–35mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'pakistan passport photo online', verified:'Jan 2025', officialUrl:'https://dgip.gov.pk/service/machinereadablepassport' },
+  // MIDDLE EAST
+  { id:'uae-visa', flag:'🇦🇪', name:'UAE / Dubai', doc:'UAE Visa / Emirates ID', w:43, h:55, dpi:300, bg:'Plain white', head:'30–36mm', bgColor:'#FFFFFF', region:'middleeast', seoKeyword:'uae visa photo online', verified:'Jan 2025', officialUrl:'https://icp.gov.ae/en/services/category/emirates-id' },
+  { id:'saudi', flag:'🇸🇦', name:'Saudi Arabia', doc:'Saudi Arabia Visa', w:40, h:60, dpi:300, bg:'Plain white', head:'30–36mm', bgColor:'#FFFFFF', region:'middleeast', seoKeyword:'saudi visa photo online', verified:'Jan 2025', officialUrl:'https://visa.mofa.gov.sa' },
+  // OCEANIA
+  { id:'australia', flag:'🇦🇺', name:'Australia', doc:'Australia Passport / Visa', w:35, h:45, dpi:300, bg:'Plain white or off-white', head:'30–36mm', bgColor:'#FAFAFA', region:'oceania', seoKeyword:'australia passport photo online', verified:'Jan 2025', officialUrl:'https://www.passports.gov.au/photos' },
+  { id:'new-zealand', flag:'🇳🇿', name:'New Zealand', doc:'New Zealand Passport', w:35, h:45, dpi:300, bg:'Plain white or light grey', head:'29–34mm', bgColor:'#FAFAFA', region:'oceania', seoKeyword:'new zealand passport photo online', verified:'Jan 2025', officialUrl:'https://www.govt.nz/browse/passports-and-travel/nz-passports/photo-requirements-for-nz-passports/' },
+  // AFRICA
+  { id:'nigeria', flag:'🇳🇬', name:'Nigeria', doc:'Nigeria Passport / Visa', w:35, h:45, dpi:300, bg:'Plain white', head:'28–34mm', bgColor:'#FFFFFF', region:'africa', seoKeyword:'nigeria passport photo online', verified:'Jan 2025', officialUrl:'https://immigration.gov.ng/international-passport-2/' },
+  // ASIA (additional)
+  { id:'hong-kong', flag:'🇭🇰', name:'Hong Kong', doc:'HKSAR Passport / HKID', w:40, h:50, dpi:300, bg:'Plain white or off-white', head:'29–34mm', bgColor:'#FAFAFA', region:'asia', seoKeyword:'hong kong passport photo online', verified:'Jan 2025', officialUrl:'https://www.immd.gov.hk/eng/services/hksar_passport/photo_guidelines.html' },
+  { id:'taiwan', flag:'🇹🇼', name:'Taiwan', doc:'Taiwan Passport / ARC', w:35, h:45, dpi:300, bg:'Plain white', head:'29–34mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'taiwan passport photo online', verified:'Jan 2025', officialUrl:'https://www.immigration.gov.tw/5382/5385/7244/7250/' },
+];
+
+let selectedSpec = null;
+let processedImageData = null;
+let selectedPrice = 'single';
+let activeRegion = 'all';
+
+// ═══════════════════════════════════════════
+// COUNTRY GRID
+// ═══════════════════════════════════════════
+const grid = document.getElementById('country-grid');
+
+function renderGrid(specs) {
+  grid.innerHTML = '';
+  specs.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'country-btn';
+    if(selectedSpec && selectedSpec.id === s.id) btn.classList.add('selected');
+    btn.innerHTML = `<span class="country-flag">${s.flag}</span><span class="country-name">${s.name}</span><span class="country-spec">${s.w}×${s.h}mm</span>`;
+    btn.onclick = () => selectCountry(s, btn);
+    grid.appendChild(btn);
+  });
+  document.getElementById('country-count').textContent = `${specs.length} document type${specs.length!==1?'s':''}`;
+}
+
+function filterCountries() {
+  const q = document.getElementById('country-search').value.toLowerCase();
+  let filtered = SPECS.filter(s => activeRegion === 'all' || s.region === activeRegion);
+  if(q) filtered = filtered.filter(s => s.name.toLowerCase().includes(q) || s.doc.toLowerCase().includes(q));
+  renderGrid(filtered);
+}
+
+function setRegion(r, btn) {
+  activeRegion = r;
+  document.querySelectorAll('.region-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  filterCountries();
+}
+
+renderGrid(SPECS);
+
+// SEO grid
+const seoGrid = document.getElementById('seo-links-grid');
+SPECS.forEach(s => {
+  const a = document.createElement('a');
+  a.href = `/visa-photo/${s.id}`;
+  a.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border:1px solid #E2DED5;border-radius:10px;text-decoration:none;font-family:DM Sans,sans-serif;';
+  a.innerHTML = `<span style="font-size:20px;">${s.flag}</span><div><div style="font-size:13px;font-weight:500;color:#1A1916;">${s.name}</div><div style="font-size:11px;color:#8A8880;">${s.w}×${s.h}mm</div></div>`;
+  seoGrid.appendChild(a);
+});
+
+function selectCountry(spec, btn) {
+  document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedSpec = spec;
+  document.getElementById('cta-flag').textContent = spec.flag;
+  document.getElementById('cta-doc').textContent = spec.doc;
+  document.getElementById('cta-spec-summary').textContent = `${spec.w}×${spec.h}mm · ${spec.dpi} DPI`;
+  document.getElementById('cta-size').textContent = `${spec.w}×${spec.h}mm`;
+  document.getElementById('cta-dpi').textContent = `${spec.dpi} DPI`;
+  document.getElementById('cta-bg').textContent = spec.bg.replace('Plain ','');
+  document.getElementById('cta-head').textContent = spec.head;
+  const link = document.getElementById('cta-official-link');
+  link.href = spec.officialUrl || '#';
+  link.style.display = spec.officialUrl ? 'inline' : 'none';
+  document.getElementById('selection-cta').style.display = 'block';
+  document.getElementById('idle-prompt').style.display = 'none';
+  document.getElementById('selection-cta').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function clearSelection() {
+  document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('selected'));
+  selectedSpec = null;
+  document.getElementById('selection-cta').style.display = 'none';
+  document.getElementById('idle-prompt').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════
+// STEP NAVIGATION
+// ═══════════════════════════════════════════
+function goToStep(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('panel-'+i).classList.toggle('active', i===n);
+    const t = document.getElementById('tab-'+i);
+    t.classList.remove('active','done');
+    if(i===n) t.classList.add('active');
+    if(i<n) t.classList.add('done');
+  });
+  if(n===2 && selectedSpec) {
+    document.getElementById('p2-flag').textContent = selectedSpec.flag;
+    document.getElementById('p2-doc').textContent = selectedSpec.doc;
+    document.getElementById('p2-spec').textContent = `${selectedSpec.w}×${selectedSpec.h}mm · ${selectedSpec.dpi} DPI`;
+    document.getElementById('editor-spec-label').textContent = `${selectedSpec.doc} · ${selectedSpec.w}×${selectedSpec.h}mm`;
+  }
+  if(n===3) renderResult();
+}
+
+function navigateToTab(n) {
+  const cur = [1,2,3].find(i => document.getElementById('panel-'+i).classList.contains('active'));
+  if(n >= cur) return;
+  goBackTo(n);
+}
+
+function goBackTo(n) {
+  stopCamera();
+  showSection('upload');
+  processedImageData = null;
+  if(n===1) {
+    document.getElementById('success-box').classList.remove('show');
+    document.getElementById('paywall-box').style.display = '';
+    const pb = document.getElementById('pay-btn');
+    if(pb) { pb.textContent='Pay with Stripe →'; pb.disabled=false; }
+  }
+  goToStep(n);
+}
+
+// ═══════════════════════════════════════════
+// UPLOAD — SIMPLE AND DIRECT
+// ═══════════════════════════════════════════
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').style.borderColor = '';
+  const f = e.dataTransfer.files[0];
+  if(f) handleFile(f);
+}
+
+function handleFileSelect(f) {
+  if(f) handleFile(f);
+}
+
+function handleFile(file) {
+  if(!selectedSpec) { alert('Please select a country in Step 1 first.'); return; }
+  if(!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Please use a JPG, PNG or WEBP image.'); return; }
+  if(file.size > 10*1024*1024) { alert('File too large — max 10MB.'); return; }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    loadImageIntoEditor(e.target.result);
+  };
+  reader.readAsDataURL(file);
+}
+
+let editorImg = null;
+let editorRotation = 0;
+let editorFlipped = false;
+
+function loadImageIntoEditor(dataUrl) {
+  const img = new Image();
+  img.onload = function() {
+    editorImg = img;
+    editorRotation = 0;
+    editorFlipped = false;
+    document.getElementById('adj-brightness').value = 0;
+    document.getElementById('adj-contrast').value = 0;
+    document.getElementById('adj-zoom').value = 100;
+    document.getElementById('lbl-brightness').textContent = '0';
+    document.getElementById('lbl-contrast').textContent = '0';
+    document.getElementById('lbl-zoom').textContent = '100%';
+    // Set spec label
+    if(selectedSpec) document.getElementById('editor-spec-label').textContent = `${selectedSpec.doc} · ${selectedSpec.w}×${selectedSpec.h}mm`;
+    redrawEditor();
+    showSection('editor');
+    // Init brush canvas
+    brushSnapshots = [];
+    isBrushing = false;
+    setTimeout(initBrushCanvas, 30);
+    // Run photo checks in background
+    runUploadChecks(img);
+  };
+  img.onerror = function() { alert('Could not load image. Please try another file.'); };
+  img.src = dataUrl;
+}
+
+function redrawEditor() {
+  const canvas = document.getElementById('editor-canvas');
+  if(!editorImg) return;
+
+  const brightness = parseInt(document.getElementById('adj-brightness').value) || 0;
+  const contrast = parseInt(document.getElementById('adj-contrast').value) || 0;
+  const zoom = (parseInt(document.getElementById('adj-zoom').value) || 100) / 100;
+  document.getElementById('lbl-brightness').textContent = brightness > 0 ? '+'+brightness : brightness;
+  document.getElementById('lbl-contrast').textContent = contrast > 0 ? '+'+contrast : contrast;
+  document.getElementById('lbl-zoom').textContent = Math.round(zoom*100)+'%';
+
+  const isRotated = editorRotation % 180 !== 0;
+  const srcW = isRotated ? editorImg.height : editorImg.width;
+  const srcH = isRotated ? editorImg.width : editorImg.height;
+  const boxW = (canvas.parentElement.offsetWidth || 280);
+  const boxH = Math.min(boxW * srcH / srcW, 420);
+  canvas.width = boxW;
+  canvas.height = boxH;
+  canvas.style.width = boxW + 'px';
+  canvas.style.height = boxH + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, boxW, boxH);
+  ctx.fillStyle = '#333';
+  ctx.fillRect(0, 0, boxW, boxH);
+  ctx.save();
+  ctx.translate(boxW/2, boxH/2);
+  if(editorFlipped) ctx.scale(-1,1);
+  ctx.rotate(editorRotation * Math.PI/180);
+  ctx.scale(zoom, zoom);
+  const scale = Math.min(boxW/srcW, boxH/srcH);
+  const dw = srcW * scale / zoom;
+  const dh = srcH * scale / zoom;
+  ctx.drawImage(editorImg, -dw/2, -dh/2, dw, dh);
+  ctx.restore();
+
+  if(brightness !== 0 || contrast !== 0) {
+    const id = ctx.getImageData(0,0,boxW,boxH);
+    const d = id.data;
+    const f = contrast !== 0 ? (259*(contrast+255))/(255*(259-contrast)) : 1;
+    for(let i=0;i<d.length;i+=4) {
+      if(d[i+3]===0) continue;
+      for(let c=0;c<3;c++) {
+        let v = d[i+c] + brightness;
+        if(contrast!==0) v = f*(v-128)+128;
+        d[i+c] = Math.max(0,Math.min(255,Math.round(v)));
+      }
+    }
+    ctx.putImageData(id,0,0);
+  }
+
+  // Sync brush canvas size
+  const bc = document.getElementById('brush-canvas');
+  if(bc) { bc.width=boxW; bc.height=boxH; bc.style.width=boxW+'px'; bc.style.height=boxH+'px'; }
+
+  // Stamp watermark on display canvas
+  stampWatermarkOnPreview();
+}
+
+function stampWatermarkOnPreview() {
+  // Draw watermark on top of editor canvas without modifying underlying pixel data
+  // We use a separate overlay approach via CSS pseudo — but since we can't do that
+  // on canvas, we re-stamp each redraw on the display canvas only.
+  // The blob extracted in processPhoto uses the canvas BEFORE this stamp via
+  // a clean offscreen render, so this only affects what the user sees.
+  const canvas = document.getElementById('editor-canvas');
+  const ctx = canvas.getContext('2d');
+  stampWatermark(ctx, canvas.width, canvas.height);
+}
+
+function stampWatermark(ctx, W, H) {
+  // Place watermark stamps only in background corners — not over the face/person area
+  // Face typically occupies the centre ~60% width, top ~80% height of the image
+  const stamps = [
+    // Top-left corner
+    { x: W * 0.13, y: H * 0.08, deg: -20 },
+    // Top-right corner
+    { x: W * 0.87, y: H * 0.08, deg: 20 },
+    // Bottom-left corner
+    { x: W * 0.13, y: H * 0.92, deg: -15 },
+    // Bottom-right corner
+    { x: W * 0.87, y: H * 0.92, deg: 15 },
+    // Bottom centre (below chin area)
+    { x: W * 0.50, y: H * 0.94, deg: 0 },
+  ];
+  ctx.save();
+  ctx.globalAlpha = 0.35;
+  ctx.fillStyle = '#555555';
+  ctx.font = `bold ${Math.max(10, Math.floor(W * 0.07))}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  stamps.forEach(({ x, y, deg }) => {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(deg * Math.PI / 180);
+    ctx.fillText('PREVIEW', 0, 0);
+    ctx.restore();
+  });
+  ctx.restore();
+}
+
+function rotateEditor(deg) { editorRotation=(editorRotation+deg+360)%360; redrawEditor(); }
+function flipEditor() { editorFlipped=!editorFlipped; redrawEditor(); }
+function resetEditor() {
+  editorRotation=0; editorFlipped=false;
+  document.getElementById('adj-brightness').value=0;
+  document.getElementById('adj-contrast').value=0;
+  document.getElementById('adj-zoom').value=100;
+  brushSnapshots=[]; // clear undo history too
+  redrawEditor();
+}
+
+// ═══════════════════════════════════════════
+// TOUCH-UP BRUSH
+// ═══════════════════════════════════════════
+let brushMode = 'heal';
+let brushSnapshots = [];
+let isBrushing = false;
+let currentBrushStroke = null;
+
+function setBrushMode(mode, btn) {
+  brushMode = mode;
+  document.querySelectorAll('.brush-mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function initBrushCanvas() {
+  const ec = document.getElementById('editor-canvas');
+  const bc = document.getElementById('brush-canvas');
+  if(!ec || !bc) return;
+  bc.width  = ec.offsetWidth;
+  bc.height = ec.offsetHeight;
+  bc.style.width  = ec.offsetWidth  + 'px';
+  bc.style.height = ec.offsetHeight + 'px';
+
+  bc.onmousedown  = e => startBrush(e, bc);
+  bc.onmousemove  = e => { if(isBrushing) continueBrush(e, bc); else showCursor(e, bc); };
+  bc.onmouseup    = () => endBrush(bc);
+  bc.onmouseleave = () => { endBrush(bc); clearBrushCursor(bc); };
+  bc.ontouchstart = e => { e.preventDefault(); startBrush(e.touches[0], bc); };
+  bc.ontouchmove  = e => { e.preventDefault(); if(isBrushing) continueBrush(e.touches[0], bc); };
+  bc.ontouchend   = () => endBrush(bc);
+}
+
+function getBrushXY(e, canvas) {
+  const r = canvas.getBoundingClientRect();
+  const ec = document.getElementById('editor-canvas');
+  const scaleX = ec.width  / canvas.offsetWidth;
+  const scaleY = ec.height / canvas.offsetHeight;
+  return { x:(e.clientX-r.left)*scaleX, y:(e.clientY-r.top)*scaleY };
+}
+
+function showCursor(e, bc) {
+  const ctx = bc.getContext('2d');
+  ctx.clearRect(0,0,bc.width,bc.height);
+  const size = parseInt(document.getElementById('brush-size').value);
+  const r = bc.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  ctx.beginPath(); ctx.arc(x, y, size/2, 0, Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,0.7)'; ctx.lineWidth=1.5;
+  ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
+}
+
+function clearBrushCursor(bc) {
+  bc.getContext('2d').clearRect(0,0,bc.width,bc.height);
+}
+
+function startBrush(e, bc) {
+  isBrushing = true;
+  // Snapshot for undo
+  const ec = document.getElementById('editor-canvas');
+  const snap = ec.getContext('2d').getImageData(0,0,ec.width,ec.height);
+  brushSnapshots.push(snap);
+  if(brushSnapshots.length > 20) brushSnapshots.shift();
+  const pos = getBrushXY(e, bc);
+  currentBrushStroke = { mode:brushMode, size:parseInt(document.getElementById('brush-size').value), strength:parseInt(document.getElementById('brush-strength').value)/100 };
+  applyBrushAt(pos.x, pos.y);
+}
+
+function continueBrush(e, bc) {
+  const pos = getBrushXY(e, bc);
+  applyBrushAt(pos.x, pos.y);
+  // Show cursor
+  const ctx = bc.getContext('2d');
+  ctx.clearRect(0,0,bc.width,bc.height);
+  const r = bc.getBoundingClientRect();
+  const x=e.clientX-r.left, y=e.clientY-r.top;
+  ctx.beginPath(); ctx.arc(x,y,currentBrushStroke.size/2,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,0.6)'; ctx.lineWidth=1.5;
+  ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
+}
+
+function endBrush(bc) {
+  isBrushing = false;
+  currentBrushStroke = null;
+  if(bc) clearBrushCursor(bc);
+}
+
+function applyBrushAt(cx, cy) {
+  const ec = document.getElementById('editor-canvas');
+  const ctx = ec.getContext('2d');
+  const { size, strength, mode } = currentBrushStroke;
+  const r = Math.ceil(size/2);
+  const x0=Math.max(0,Math.round(cx-r)), y0=Math.max(0,Math.round(cy-r));
+  const w=Math.min(r*2, ec.width-x0), h=Math.min(r*2, ec.height-y0);
+  if(w<=0||h<=0) return;
+  const id = ctx.getImageData(x0,y0,w,h);
+  const d  = id.data;
+  for(let py=0;py<h;py++) for(let px=0;px<w;px++) {
+    const dx=px+x0-cx, dy=py+y0-cy;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist>r) continue;
+    const falloff=(1-dist/r)*strength;
+    const i=(py*w+px)*4;
+    if(d[i+3]===0) continue;
+    if(mode==='lighten') {
+      for(let c=0;c<3;c++) d[i+c]=Math.min(255,Math.round(d[i+c]+55*falloff));
+    } else if(mode==='darken') {
+      for(let c=0;c<3;c++) d[i+c]=Math.max(0,Math.round(d[i+c]-55*falloff));
+    } else if(mode==='blur') {
+      if(px>0&&px<w-1&&py>0&&py<h-1) {
+        const nb=[(py-1)*w+(px-1),(py-1)*w+px,(py-1)*w+(px+1),py*w+(px-1),py*w+(px+1),(py+1)*w+(px-1),(py+1)*w+px,(py+1)*w+(px+1)];
+        let rs=d[i],gs=d[i+1],bs=d[i+2];
+        nb.forEach(n=>{rs+=d[n*4];gs+=d[n*4+1];bs+=d[n*4+2];});
+        d[i]  =Math.round(d[i]  +(rs/9-d[i])  *falloff);
+        d[i+1]=Math.round(d[i+1]+(gs/9-d[i+1])*falloff);
+        d[i+2]=Math.round(d[i+2]+(bs/9-d[i+2])*falloff);
+      }
+    } else { // heal
+      const avg=(d[i]+d[i+1]+d[i+2])/3;
+      d[i]  =Math.round(d[i]  +(Math.min(255,avg*1.05)-d[i])  *falloff*0.6);
+      d[i+1]=Math.round(d[i+1]+(Math.min(255,avg*0.95)-d[i+1])*falloff*0.6);
+      d[i+2]=Math.round(d[i+2]+(Math.min(255,avg*0.88)-d[i+2])*falloff*0.6);
+    }
+  }
+  ctx.putImageData(id,x0,y0);
+  // Re-stamp watermark
+  stampWatermarkOnPreview();
+}
+
+function undoBrushStroke() {
+  if(!brushSnapshots.length) return;
+  const snap = brushSnapshots.pop();
+  const ec = document.getElementById('editor-canvas');
+  ec.getContext('2d').putImageData(snap,0,0);
+  stampWatermarkOnPreview();
+}
+
+function clearBrush() {
+  brushSnapshots=[];
+  redrawEditor();
+}
+
+function resetToUpload() {
+  editorImg = null;
+  document.getElementById('file-input').value = '';
+  showSection('upload');
+}
+
+// ═══════════════════════════════════════════
+// SHOW/HIDE SECTIONS IN PANEL 2
+// ═══════════════════════════════════════════
+function showSection(which) {
+  document.getElementById('upload-section').style.display = which==='upload' ? '' : 'none';
+  document.getElementById('camera-section').style.display = which==='camera' ? '' : 'none';
+  document.getElementById('editor-section').style.display = which==='editor' ? '' : 'none';
+  document.getElementById('processing-section').style.display = which==='processing' ? '' : 'none';
+  if(which !== 'camera') stopCamera();
+}
+
+function switchToUpload() {
+  document.getElementById('tab-upload-btn').classList.add('active');
+  document.getElementById('tab-camera-btn').classList.remove('active');
+  showSection('upload');
+}
+
+function switchToCamera() {
+  document.getElementById('tab-upload-btn').classList.remove('active');
+  document.getElementById('tab-camera-btn').classList.add('active');
+  showSection('camera');
+  startCamera();
+}
+
+// ═══════════════════════════════════════════
+// PHOTO CHECKS (non-blocking)
+// ═══════════════════════════════════════════
+function runUploadChecks(img) {
+  // Reset to idle
+  ['face','centre','blur','light','eyes','glasses'].forEach(k => {
+    const el = document.getElementById('uc-'+k);
+    if(el) el.className = 'editor-check-item idle';
+  });
+  setTimeout(() => {
+    try {
+      const c = document.createElement('canvas');
+      const scale = Math.min(1, 600/Math.max(img.width,img.height));
+      c.width = Math.floor(img.width*scale);
+      c.height = Math.floor(img.height*scale);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      const blur = detectBlur(c);
+      const brightness = detectBrightness(c);
+      const glare = detectGlare(c);
+      // Face detection with timeout
+      Promise.race([
+        detectFacePosition(c),
+        new Promise(r=>setTimeout(()=>r({found:true,centred:true,eyesForward:true}),1500))
+      ]).then(fp => {
+        setUCheck('face', fp.found, fp.found?'Found':'Not detected');
+        setUCheck('centre', fp.found&&fp.centred, fp.centred?'Centred':'Off-centre');
+        setUCheck('blur', blur>18, blur>18?'Sharp':'Blurry');
+        setUCheck('light', brightness>55&&brightness<230, brightness<=55?'Too dark':brightness>=230?'Overexposed':'Good');
+        setUCheck('eyes', fp.eyesForward!==false, fp.eyesForward!==false?'Forward':'Turned');
+        setUCheck('glasses', !glare.detected, glare.detected?'Glare detected':'No glare');
+      }).catch(()=>{});
+    } catch(e) {}
+  }, 100);
+}
+
+function setUCheck(key, pass, msg) {
+  const el = document.getElementById('uc-'+key);
+  if(!el) return;
+  el.className = 'editor-check-item ' + (pass?'pass':'fail');
+  el.innerHTML = `<div class="cdot"></div>${key.charAt(0).toUpperCase()+key.slice(1).replace('_',' ')} · <span style="font-weight:400;opacity:0.8;">${msg}</span>`;
+}
+
+// ═══════════════════════════════════════════
+// PROCESS PHOTO
+// ═══════════════════════════════════════════
+async function processPhoto() {
+  if(!editorImg) return;
+  showSection('processing');
+  const steps = ['ps-1','ps-2','ps-3','ps-4'];
+  const msgs = ['Analysing photo…','Removing background…','Cropping to spec…','Quality check…'];
+  function setStep(i) {
+    steps.forEach((s,j) => {
+      const el = document.getElementById(s);
+      el.classList.remove('active','done');
+      if(j<i) el.classList.add('done');
+      if(j===i) el.classList.add('active');
+    });
+    document.getElementById('processing-msg').textContent = msgs[i];
+  }
+
+  setStep(0);
+  await delay(800);
+
+  // Capture everything from the editor canvas (brightness, contrast, zoom, rotation,
+  // flip AND brush strokes) by reading its pixels — then strip the watermark by
+  // re-drawing the image region cleanly on a same-size canvas.
+  // Strategy: redraw from editorImg with all transforms to get clean base,
+  // then composite the brush-only delta on top.
+  // Simplest correct approach: read editor canvas pixels, then erase watermark
+  // by re-rendering just the watermark area clean (since watermark is in corners only).
+
+  // Actually the cleanest: snapshot editor canvas BEFORE watermark stamp.
+  // We do this by calling redrawEditor internals without the stamp step.
+  const ec = document.getElementById('editor-canvas');
+  const brightness = parseInt(document.getElementById('adj-brightness').value) || 0;
+  const contrast   = parseInt(document.getElementById('adj-contrast').value) || 0;
+  const zoom       = (parseInt(document.getElementById('adj-zoom').value) || 100) / 100;
+  const isRotated  = editorRotation % 180 !== 0;
+  const srcW = isRotated ? editorImg.height : editorImg.width;
+  const srcH = isRotated ? editorImg.width  : editorImg.height;
+  const boxW = ec.width, boxH = ec.height;
+
+  // 1. Render base (transforms + brightness/contrast) onto offscreen canvas
+  const base = document.createElement('canvas');
+  base.width = boxW; base.height = boxH;
+  const bCtx = base.getContext('2d');
+  bCtx.clearRect(0,0,boxW,boxH);
+  bCtx.save();
+  bCtx.translate(boxW/2, boxH/2);
+  if(editorFlipped) bCtx.scale(-1,1);
+  bCtx.rotate(editorRotation * Math.PI/180);
+  bCtx.scale(zoom,zoom);
+  const bScale = Math.min(boxW/srcW, boxH/srcH);
+  const bDw = srcW * bScale / zoom;
+  const bDh = srcH * bScale / zoom;
+  bCtx.drawImage(editorImg, -bDw/2, -bDh/2, bDw, bDh);
+  bCtx.restore();
+  if(brightness !== 0 || contrast !== 0) {
+    const id = bCtx.getImageData(0,0,boxW,boxH);
+    const d = id.data;
+    const f = contrast !== 0 ? (259*(contrast+255))/(255*(259-contrast)) : 1;
+    for(let i=0;i<d.length;i+=4){
+      if(d[i+3]===0) continue;
+      for(let c=0;c<3;c++){ let v=d[i+c]+brightness; if(contrast!==0) v=f*(v-128)+128; d[i+c]=Math.max(0,Math.min(255,Math.round(v))); }
+    }
+    bCtx.putImageData(id,0,0);
+  }
+
+  // 2. Composite brush strokes: wherever editor canvas differs from base, use editor canvas pixels
+  // (brush strokes are baked into editor canvas; watermark is also there but in corners only)
+  const ecData  = ec.getContext('2d').getImageData(0,0,boxW,boxH);
+  const baseData = bCtx.getImageData(0,0,boxW,boxH);
+  const merged  = bCtx.createImageData(boxW,boxH);
+  // Watermark corner regions to skip (use base instead of editor there)
+  // Corners: top 12% and bottom 10% of height, full width
+  // This removes watermark stamps while keeping brush work in the face area
+  for(let py=0;py<boxH;py++) {
+    const inWatermarkRow = (py < boxH*0.14) || (py > boxH*0.86);
+    for(let px=0;px<boxW;px++) {
+      const i=(py*boxW+px)*4;
+      const inWatermarkCorner = inWatermarkRow; // watermark only in top/bottom strips
+      if(inWatermarkCorner) {
+        // Use base (no brush, no watermark)
+        merged.data[i]  =baseData.data[i];
+        merged.data[i+1]=baseData.data[i+1];
+        merged.data[i+2]=baseData.data[i+2];
+        merged.data[i+3]=baseData.data[i+3];
+      } else {
+        // Use editor canvas (has brush strokes, no watermark in this region)
+        merged.data[i]  =ecData.data[i];
+        merged.data[i+1]=ecData.data[i+1];
+        merged.data[i+2]=ecData.data[i+2];
+        merged.data[i+3]=ecData.data[i+3];
+      }
+    }
+  }
+  const clean = document.createElement('canvas');
+  clean.width=boxW; clean.height=boxH;
+  clean.getContext('2d').putImageData(merged,0,0);
+  const editedBlob = await new Promise(r => clean.toBlob(r,'image/jpeg',0.95));
+
+  setStep(1);
+  const apiKey = document.getElementById('api-key-input').value.trim();
+  let finalBlob;
+  if(apiKey) {
+    try {
+      const fd = new FormData();
+      fd.append('image_file', editedBlob);
+      fd.append('size','auto');
+      const resp = await fetch('https://api.remove.bg/v1.0/removebg',{method:'POST',headers:{'X-Api-Key':apiKey},body:fd});
+      if(!resp.ok) throw new Error(resp.status);
+      finalBlob = await resp.blob();
+    } catch(e) {
+      alert('Background removal failed: '+e.message+'. Using original image.');
+      finalBlob = editedBlob;
+    }
+  } else {
+    await delay(800);
+    finalBlob = editedBlob;
+  }
+
+  setStep(2);
+  await delay(600);
+
+  // Composite: white background (official spec) + image
+  const bitmap = await createImageBitmap(finalBlob);
+  const PX_W = selectedSpec.w * 17;
+  const PX_H = selectedSpec.h * 17;
+  const out = document.createElement('canvas');
+  out.width = PX_W; out.height = PX_H;
+  const ctx = out.getContext('2d');
+  ctx.fillStyle = '#FFFFFF'; // white — official requirement for all supported countries
+  ctx.fillRect(0,0,PX_W,PX_H);
+  const aspect = bitmap.width/bitmap.height;
+  const canvasAspect = PX_W/PX_H;
+  let dw,dh,dx,dy;
+  if(aspect>canvasAspect){ dh=PX_H; dw=dh*aspect; dx=(PX_W-dw)/2; dy=0; }
+  else { dw=PX_W; dh=dw/aspect; dx=0; dy=(PX_H-dh)*0.1; }
+  ctx.drawImage(bitmap,dx,dy,dw,dh);
+
+  setStep(3);
+  await delay(500);
+
+  processedImageData = out.toDataURL('image/jpeg',0.95);
+  goToStep(3);
+}
+
+// ═══════════════════════════════════════════
+// CAMERA
+// ═══════════════════════════════════════════
+let cameraStream = null;
+let cameraFacing = 'user';
+let camCheckInterval = null;
+
+async function startCamera() {
+  document.getElementById('camera-error').style.display = 'none';
+  try {
+    if(cameraStream) stopCamera();
+    cameraStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:cameraFacing,width:{ideal:1280},height:{ideal:960}},audio:false});
+    const vid = document.getElementById('camera-video');
+    vid.srcObject = cameraStream;
+    vid.onloadedmetadata = () => { vid.play(); drawCameraGuide(); startCamChecks(); };
+  } catch(e) {
+    document.getElementById('camera-error').style.display = 'block';
+  }
+}
+
+function stopCamera() {
+  if(camCheckInterval) { clearInterval(camCheckInterval); camCheckInterval=null; }
+  if(cameraStream) { cameraStream.getTracks().forEach(t=>t.stop()); cameraStream=null; }
+}
+
+function flipCamera() { cameraFacing = cameraFacing==='user'?'environment':'user'; startCamera(); }
+
+function drawCameraGuide(color) {
+  const canvas = document.getElementById('camera-overlay');
+  const vid = document.getElementById('camera-video');
+  const W = vid.offsetWidth || 640;
+  const H = vid.offsetHeight || 480;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  // ── Dimensions matching passport spec (35×45mm proportions) ──
+  const photoW = W * 0.72;                  // width of the passport photo frame
+  const photoH = photoW * (45/35);         // height at 35×45mm ratio
+  const photoX = (W - photoW) / 2;
+  const photoY = (H - photoH) / 2;
+
+  // Face oval: head should be 29–34mm of 45mm height → ~65–75% of frame height
+  const ovalH = photoH * 0.70;
+  const ovalW = ovalH * 0.75;              // slightly narrower — passport head shape
+  const ovalCX = W / 2;
+  const ovalCY = photoY + photoH * 0.40;  // centred slightly above middle (head room)
+
+  // Eye level band: approximately 45–60% down the photo frame (grey shaded strip)
+  const eyeBandTop = photoY + photoH * 0.38;
+  const eyeBandH   = photoH * 0.16;
+
+  // ── 1. Semi-dark overlay outside the photo frame ──
+  ctx.fillStyle = 'rgba(0,0,0,0.45)';
+  ctx.fillRect(0, 0, W, H);
+
+  // ── 2. Clear the photo frame area ──
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.fillStyle = 'rgba(255,255,255,1)';
+  ctx.fillRect(photoX, photoY, photoW, photoH);
+  ctx.globalCompositeOperation = 'source-over';
+
+  // ── 3. Light grey tint inside the photo frame (like the diagram background) ──
+  ctx.fillStyle = 'rgba(240,240,240,0.15)';
+  ctx.fillRect(photoX, photoY, photoW, photoH);
+
+  // ── 4. Eye level shaded band (grey strip across the face) ──
+  ctx.fillStyle = 'rgba(160,160,160,0.30)';
+  ctx.fillRect(photoX, eyeBandTop, photoW, eyeBandH);
+
+  // ── 5. Photo frame border (solid thin line) ──
+  ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([]);
+  ctx.strokeRect(photoX, photoY, photoW, photoH);
+
+  // ── 6. Dotted oval for head placement ──
+  const col = color || 'rgba(80,80,80,0.95)';
+  ctx.strokeStyle = col;
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 5]);
+  ctx.beginPath();
+  ctx.ellipse(ovalCX, ovalCY, ovalW / 2, ovalH / 2, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // ── 7. Dimension arrows & labels (like the reference diagram) ──
+  ctx.fillStyle = 'rgba(255,255,255,0.92)';
+  ctx.strokeStyle = 'rgba(255,255,255,0.92)';
+  ctx.lineWidth = 1;
+  ctx.font = '500 11px DM Sans, sans-serif';
+  ctx.textBaseline = 'middle';
+
+  // Right side: total height arrow (45mm)
+  const arrowX = photoX + photoW + 14;
+  drawArrow(ctx, arrowX, photoY, arrowX, photoY + photoH);
+  ctx.textAlign = 'left';
+  ctx.fillText('45mm', arrowX + 5, photoY + photoH / 2);
+
+  // Bottom: width arrow (35mm)
+  const arrowY = photoY + photoH + 14;
+  drawArrow(ctx, photoX, arrowY, photoX + photoW, arrowY);
+  ctx.textAlign = 'center';
+  ctx.fillText('35mm', photoX + photoW / 2, arrowY + 12);
+
+  // Face height label inside the oval (head height range)
+  const labelX = ovalCX + ovalW / 2 + 10;
+  const faceTopY = ovalCY - ovalH / 2;
+  const faceBotY = ovalCY + ovalH / 2;
+  ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 4]);
+  ctx.beginPath(); ctx.moveTo(ovalCX - ovalW/2 - 6, faceTopY); ctx.lineTo(ovalCX + ovalW/2 + 30, faceTopY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ovalCX - ovalW/2 - 6, faceBotY); ctx.lineTo(ovalCX + ovalW/2 + 30, faceBotY); ctx.stroke();
+  ctx.setLineDash([]);
+  drawArrow(ctx, labelX + 14, faceTopY, labelX + 14, faceBotY);
+  ctx.textAlign = 'left';
+  ctx.fillStyle = 'rgba(255,255,255,0.92)';
+  ctx.font = '500 10px DM Sans, sans-serif';
+  ctx.fillText('29–34mm', labelX + 20, ovalCY);
+
+  // ── 8. Guide label above frame ──
+  ctx.font = '500 12px DM Sans, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.fillText('Align your face within the dotted oval', W / 2, photoY - 12);
+}
+
+function drawArrow(ctx, x1, y1, x2, y2) {
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+  const hw = 5; // arrowhead size
+  ctx.save();
+  ctx.strokeStyle = ctx.strokeStyle;
+  ctx.lineWidth = 1;
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+  ctx.stroke();
+  // arrowhead at end
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - hw * Math.cos(angle - Math.PI/6), y2 - hw * Math.sin(angle - Math.PI/6));
+  ctx.lineTo(x2 - hw * Math.cos(angle + Math.PI/6), y2 - hw * Math.sin(angle + Math.PI/6));
+  ctx.closePath(); ctx.fill();
+  // arrowhead at start
+  const a2 = angle + Math.PI;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x1 - hw * Math.cos(a2 - Math.PI/6), y1 - hw * Math.sin(a2 - Math.PI/6));
+  ctx.lineTo(x1 - hw * Math.cos(a2 + Math.PI/6), y1 - hw * Math.sin(a2 + Math.PI/6));
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+function startCamChecks() {
+  if(camCheckInterval) clearInterval(camCheckInterval);
+  camCheckInterval = setInterval(runCamChecks, 900);
+}
+
+function runCamChecks() {
+  const vid = document.getElementById('camera-video');
+  if(!vid.videoWidth) return;
+  const c = document.createElement('canvas');
+  c.width = vid.videoWidth; c.height = vid.videoHeight;
+  const ctx = c.getContext('2d');
+  ctx.translate(c.width,0); ctx.scale(-1,1);
+  ctx.drawImage(vid,0,0);
+  const blur = detectBlur(c);
+  const brightness = detectBrightness(c);
+  const glare = detectGlare(c);
+  Promise.race([
+    detectFacePosition(c),
+    new Promise(r=>setTimeout(()=>r({found:false,centred:false,eyesForward:true}),1000))
+  ]).then(fp => {
+    const results = {
+      face: fp.found,
+      centre: fp.found && fp.centred,
+      blur: blur>18,
+      light: brightness>55 && brightness<230,
+      eyes: fp.eyesForward!==false,
+      glasses: !glare.detected
+    };
+    setCamCheck('face', results.face, results.face?'Detected':'Not found');
+    setCamCheck('centre', results.centre, results.centre?'Centred':'Align with guide');
+    setCamCheck('blur', results.blur, results.blur?'Sharp':'Hold still');
+    setCamCheck('light', results.light, brightness<=55?'Too dark':brightness>=230?'Too bright':'Good');
+    setCamCheck('eyes', results.eyes, results.eyes?'Forward':'Face camera');
+    setCamCheck('glasses', results.glasses, glare.detected?'Glare — adjust':'No glare');
+    const allPass = Object.values(results).every(Boolean);
+    const btn = document.getElementById('capture-btn');
+    btn.disabled = !allPass;
+    btn.style.opacity = allPass?'1':'0.4';
+    btn.style.cursor = allPass?'pointer':'not-allowed';
+    btn.style.borderColor = allPass?'#1A7A4A':'';
+    btn.style.background = allPass?'#E8F5EE':'white';
+    document.getElementById('capture-hint').textContent = allPass?'All checks passed — tap to capture!':'Fix issues above to capture';
+    document.getElementById('capture-hint').style.color = allPass?'#1A7A4A':'';
+    drawCameraGuide(allPass?'rgba(29,158,117,0.9)':fp.found?'rgba(255,200,0,0.85)':'rgba(255,255,255,0.7)');
+  }).catch(()=>{});
+}
+
+function setCamCheck(key, pass, msg) {
+  const el = document.getElementById('cc-'+key);
+  const sl = document.getElementById('cc-'+key+'-s');
+  if(el) el.className = 'check-item '+(pass?'pass':'fail');
+  if(sl) sl.textContent = msg;
+}
+
+function captureFromCamera() {
+  const vid = document.getElementById('camera-video');
+  if(!vid.srcObject) return;
+  const c = document.createElement('canvas');
+  c.width = vid.videoWidth||640; c.height = vid.videoHeight||480;
+  const ctx = c.getContext('2d');
+  ctx.translate(c.width,0); ctx.scale(-1,1);
+  ctx.drawImage(vid,0,0,c.width,c.height);
+  c.toBlob(blob=>{
+    stopCamera();
+    switchToUpload();
+    const reader = new FileReader();
+    reader.onload = e => loadImageIntoEditor(e.target.result);
+    reader.readAsDataURL(blob);
+  },'image/jpeg',0.95);
+}
+
+window.addEventListener('resize',()=>{ if(document.getElementById('camera-section').style.display!=='none') drawCameraGuide(); });
+
+// ═══════════════════════════════════════════
+// IMAGE ANALYSIS
+// ═══════════════════════════════════════════
+function detectBlur(canvas) {
+  const W=canvas.width,H=canvas.height,ctx=canvas.getContext('2d');
+  const d=ctx.getImageData(Math.floor(W*0.25),Math.floor(H*0.15),Math.floor(W*0.5),Math.floor(H*0.7)).data;
+  const sw=Math.floor(W*0.5);
+  let sum=0,count=0;
+  for(let y=1;y<Math.floor(H*0.7)-1;y+=3) for(let x=1;x<sw-1;x+=3) {
+    const i=(y*sw+x)*4;
+    const g=(d[i]+d[i+1]+d[i+2])/3;
+    const gL=(d[(y*sw+x-1)*4]+d[(y*sw+x-1)*4+1]+d[(y*sw+x-1)*4+2])/3;
+    const gR=(d[(y*sw+x+1)*4]+d[(y*sw+x+1)*4+1]+d[(y*sw+x+1)*4+2])/3;
+    const gU=(d[((y-1)*sw+x)*4]+d[((y-1)*sw+x)*4+1]+d[((y-1)*sw+x)*4+2])/3;
+    const gD=(d[((y+1)*sw+x)*4]+d[((y+1)*sw+x)*4+1]+d[((y+1)*sw+x)*4+2])/3;
+    sum+=Math.abs(2*g-gL-gR)+Math.abs(2*g-gU-gD); count++;
+  }
+  return sum/(count||1);
+}
+
+function detectBrightness(canvas) {
+  const W=canvas.width,H=canvas.height,ctx=canvas.getContext('2d');
+  const d=ctx.getImageData(Math.floor(W*0.3),Math.floor(H*0.15),Math.floor(W*0.4),Math.floor(H*0.65)).data;
+  let lum=0;
+  for(let i=0;i<d.length;i+=16) lum+=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];
+  return lum/(d.length/16);
+}
+
+function detectGlare(canvas) {
+  const W=canvas.width,H=canvas.height,ctx=canvas.getContext('2d');
+  const ew=Math.floor(W*0.6),eh=Math.floor(H*0.22);
+  const d=ctx.getImageData(Math.floor(W*0.2),Math.floor(H*0.2),ew,eh).data;
+  let hotspots=0,leftHot=0,rightHot=0,darkCount=0;
+  const pixels=ew*eh;
+  for(let i=0;i<d.length;i+=4) {
+    const r=d[i],g=d[i+1],b=d[i+2];
+    const lum=0.299*r+0.587*g+0.114*b;
+    const maxC=Math.max(r,g,b),minC=Math.min(r,g,b);
+    const sat=maxC>0?(maxC-minC)/maxC:0;
+    if(lum>220&&sat<0.12){hotspots++;const px=(i/4)%ew;if(px<ew/2)leftHot++;else rightHot++;}
+    if(lum<50)darkCount++;
+  }
+  const hotRatio=hotspots/pixels;
+  const totalHot=leftHot+rightHot;
+  const symmetry=totalHot>0?1-Math.abs(leftHot-rightHot)/totalHot:0;
+  const darkRatio=darkCount/pixels;
+  const hasFrames=darkRatio>0.06&&darkRatio<0.45;
+  return {detected:hotRatio>0.018&&(symmetry>0.45||hasFrames),hasFrames,symmetry:Math.round(symmetry*100)};
+}
+
+let faceDetector = null;
+(async()=>{ try{ if('FaceDetector' in window) faceDetector=new FaceDetector({fastMode:false,maxDetectedFaces:1}); }catch(e){} })();
+
+async function detectFacePosition(canvas) {
+  if(faceDetector) {
+    try {
+      const faces=await faceDetector.detect(canvas);
+      if(!faces.length) return {found:false,centred:false,eyesForward:true};
+      const f=faces[0].boundingBox,W=canvas.width,H=canvas.height;
+      const cx=f.x+f.width/2,cy=f.y+f.height/2;
+      return {
+        found:true,
+        centred:Math.abs(cx/W-0.5)<0.2&&Math.abs(cy/H-0.34)<0.2,
+        eyesForward:true
+      };
+    } catch(e){}
+  }
+  // Fallback: skin tone heuristic
+  const W=canvas.width,H=canvas.height,ctx=canvas.getContext('2d');
+  const d=ctx.getImageData(Math.floor(W*0.25),Math.floor(H*0.1),Math.floor(W*0.5),Math.floor(H*0.7)).data;
+  let skin=0;
+  for(let i=0;i<d.length;i+=4){const r=d[i],g=d[i+1],b=d[i+2];if(r>80&&g>40&&b>20&&r>g&&r>b&&(r-g)>10)skin++;}
+  const ratio=skin/(d.length/4);
+  return {found:ratio>0.1,centred:ratio>0.15,eyesForward:true};
+}
+
+// ═══════════════════════════════════════════
+// RENDER RESULT
+// ═══════════════════════════════════════════
+function renderResult() {
+  if(!processedImageData||!selectedSpec) return;
+  document.getElementById('r-doc').textContent = selectedSpec.doc;
+  document.getElementById('r-size').textContent = `${selectedSpec.w}×${selectedSpec.h}mm`;
+  const chk = document.getElementById('disclaimer-check');
+  if(chk) chk.checked = false;
+  const pb = document.getElementById('pay-btn');
+  if(pb) { pb.disabled=false; pb.textContent='Pay with Stripe →'; }
+  updatePrices();
+  const canvas = document.getElementById('preview-canvas');
+  const img = new Image();
+  img.onload = () => {
+    canvas.width=img.width; canvas.height=img.height;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(img,0,0);
+    stampWatermark(ctx, canvas.width, canvas.height);
+  };
+  img.src = processedImageData;
+  document.getElementById('preview-label').textContent = `${selectedSpec.doc} · ${selectedSpec.w}×${selectedSpec.h}mm`;
+}
+
+// ═══════════════════════════════════════════
+// PAYMENT
+// ═══════════════════════════════════════════
+const CURRENCIES = {
+  GBP: { symbol:'£',   single:1.99,  bundle:4.99  },
+  USD: { symbol:'$',   single:2.49,  bundle:6.49  },
+  EUR: { symbol:'€',   single:2.29,  bundle:5.99  },
+  HKD: { symbol:'HK$', single:19,    bundle:49    },
+  TWD: { symbol:'NT$', single:65,    bundle:159   },
+  AUD: { symbol:'A$',  single:3.99,  bundle:9.99  },
+  CAD: { symbol:'C$',  single:3.49,  bundle:8.99  },
+  SGD: { symbol:'S$',  single:3.49,  bundle:8.99  },
+  INR: { symbol:'₹',   single:199,   bundle:499   },
+  JPY: { symbol:'¥',   single:299,   bundle:749   },
+  CNY: { symbol:'¥',   single:18,    bundle:45    },
+  MYR: { symbol:'RM',  single:11,    bundle:28    },
+  AED: { symbol:'AED', single:9,     bundle:23    },
+  SAR: { symbol:'SAR', single:9,     bundle:23    },
+  NZD: { symbol:'NZ$', single:3.99,  bundle:9.99  },
+  ZAR: { symbol:'R',   single:45,    bundle:110   },
+};
+let selectedCurrency = 'GBP';
+
+function updatePrices() {
+  const sel = document.getElementById('currency-select');
+  if(!sel) return;
+  selectedCurrency = sel.value;
+  const c = CURRENCIES[selectedCurrency];
+  if(!c) return;
+  const dec = c.single >= 10 ? 0 : 2;
+  document.getElementById('price-single').textContent = `${c.symbol}${c.single.toFixed(dec)}`;
+  document.getElementById('price-bundle').textContent = `${c.symbol}${c.bundle.toFixed(dec)}`;
+  const pb = document.getElementById('pay-btn');
+  if(pb && !pb.disabled) {
+    const price = selectedPrice==='single'?c.single:c.bundle;
+    pb.textContent = `Pay ${c.symbol}${price.toFixed(dec)} with Stripe →`;
+  }
+}
+
+function selectPrice(p) {
+  selectedPrice = p;
+  document.getElementById('opt-single').classList.toggle('selected',p==='single');
+  document.getElementById('opt-bundle').classList.toggle('selected',p==='bundle');
+  updatePrices();
+}
+
+function doPayment() {
+  const chk = document.getElementById('disclaimer-check');
+  if(chk && !chk.checked) {
+    document.getElementById('disclaimer-box').style.border='1.5px solid var(--red)';
+    chk.focus(); return;
+  }
+  const btn = document.getElementById('pay-btn');
+  btn.textContent='Processing…'; btn.disabled=true;
+  setTimeout(()=>{
+    document.getElementById('paywall-box').style.display='none';
+    document.getElementById('success-box').classList.add('show');
+    // Clean download — NO watermark
+    const c = document.createElement('canvas');
+    const src = new Image();
+    src.onload=()=>{
+      c.width=src.width; c.height=src.height;
+      c.getContext('2d').drawImage(src,0,0); // clean, no stamp
+      const link=document.getElementById('download-link');
+      link.href=c.toDataURL('image/jpeg',0.95);
+      link.download=`snapvisa-${selectedSpec.id}.jpg`;
+    };
+    src.src=processedImageData;
+  },1800);
+}
+
+// ═══════════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════════
+function resetApp() {
+  selectedSpec=null; processedImageData=null; editorImg=null;
+  stopCamera();
+  showSection('upload');
+  document.getElementById('file-input').value='';
+  document.getElementById('success-box').classList.remove('show');
+  document.getElementById('paywall-box').style.display='';
+  const pb=document.getElementById('pay-btn');
+  if(pb){pb.disabled=false;pb.textContent='Pay with Stripe →';}
+  document.getElementById('country-search').value='';
+  document.querySelectorAll('.country-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('selection-cta').style.display='none';
+  document.getElementById('idle-prompt').style.display='block';
+  activeRegion='all';
+  document.querySelectorAll('.region-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  renderGrid(SPECS);
+  goToStep(1);
+}
+
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+
+// ═══════════════════════════════════════════
+// PROTECT PREVIEWS
+// ═══════════════════════════════════════════
+document.addEventListener('contextmenu',e=>{if(e.target.tagName==='CANVAS')e.preventDefault();});
+document.addEventListener('dragstart',e=>{if(e.target.tagName==='CANVAS')e.preventDefault();});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='u')){e.preventDefault();}});
+
+</script>
+</body>
+</html>
