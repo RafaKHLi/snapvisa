@@ -905,9 +905,14 @@ function goToStep(n) {
     if(i===n) t.classList.add('active');
     if(i<n) t.classList.add('done');
   });
-  // Scroll to top of card
-  const card = document.querySelector('.main-card');
-  if(card) { setTimeout(() => card.scrollIntoView({behavior:'smooth', block:'start'}), 50); }
+  // Hide hero on steps 2/3, show on step 1
+  const hero = document.querySelector('.hero');
+  if(hero) hero.style.display = (n === 1) ? '' : 'none';
+  // Scroll main card into view
+  setTimeout(() => {
+    const card = document.querySelector('.main-card');
+    if(card) window.scrollTo({ top: card.offsetTop - 70, behavior: 'smooth' });
+  }, 50);
   if(n===2 && selectedSpec) {
     document.getElementById('p2-flag').textContent = selectedSpec.flag;
     document.getElementById('p2-doc').textContent = selectedSpec.doc;
