@@ -1441,23 +1441,25 @@ async function processPhoto() {
   setStep(1);
   const apiKey = document.getElementById('api-key-input').value.trim();
   let finalBlob;
-  if(apiKey) {
-    try {
-      const fd = new FormData();
-      fd.append('image_file', editedBlob);
-      fd.append('size','auto');
-      const resp = await fetch('https://api.remove.bg/v1.0/removebg',{method:'POST',headers:{'X-Api-Key':apiKey},body:fd});
-      if(!resp.ok) throw new Error(resp.status);
-      finalBlob = await resp.blob();
-    } catch(e) {
-      alert('Background removal failed: '+e.message+'. Using original image.');
-      finalBlob = editedBlob;
-    }
-  } else {
-    await delay(800);
+  try {
+    // Browser-side AI — free, no API, runs locally in user's browser
+    const { removeBackground } = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/browser/index.mjs');
+    const resultBlob = await removeBackground(editedBlob, {
+      model: 'small',
+      output: { format: 'image/png', quality: 1.0 },
+      progress: (key, current, total) => {
+        if(key === 'compute:inference') {
+          const pct = Math.round(current/total*100);
+          const msgEl = document.getElementById('processing-msg');
+          if(msgEl) msgEl.textContent = 'Removing background… ' + pct + '%';
+        }
+      }
+    });
+    finalBlob = resultBlob;
+  } catch(e) {
+    console.warn('BG removal failed:', e.message);
     finalBlob = editedBlob;
   }
-
   setStep(2);
   await delay(600);
 
