@@ -1864,7 +1864,7 @@ function selectPrice(p) {
   updatePrices();
 }
 
-function doPayment() {
+async function doPayment() {
   const chk = document.getElementById('disclaimer-check');
   if(chk && !chk.checked) {
     document.getElementById('disclaimer-box').style.border='1.5px solid var(--red)';
