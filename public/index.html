@@ -1441,32 +1441,22 @@ async function processPhoto() {
   setStep(1);
   let finalBlob;
   try {
-    // Browser-side AI using transformers.js + RMBG-1.4 model
     const msgEl = document.getElementById('processing-msg');
-    if(msgEl) msgEl.textContent = 'Loading AI model… (first time only)';
-    const { AutoModel, AutoProcessor, env, RawImage } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3/dist/transformers.min.js');
-    env.allowLocalModels = false;
+    if(msgEl) msgEl.textContent = 'Loading AI model…';
+    // esm.sh resolves all deps including onnxruntime-web
+    const { removeBackground } = await import('https://esm.sh/@imgly/background-removal@1.7.0');
     if(msgEl) msgEl.textContent = 'Removing background…';
-    // Load model (cached after first use)
-    const model = await AutoModel.from_pretrained('briaai/RMBG-1.4', { config: { model_type: 'custom' }});
-    const processor = await AutoProcessor.from_pretrained('briaai/RMBG-1.4');
-    // Convert blob to RawImage
-    const url = URL.createObjectURL(editedBlob);
-    const image = await RawImage.fromURL(url);
-    URL.revokeObjectURL(url);
-    // Process
-    const { pixel_values } = await processor(image);
-    const { output } = await model({ input: pixel_values });
-    // Apply mask to original image
-    const mask = await RawImage.fromTensor(output[0].mul(255).to('uint8')).resize(image.width, image.height);
-    const canvas = document.createElement('canvas');
-    canvas.width = image.width; canvas.height = image.height;
-    const ctx2 = canvas.getContext('2d');
-    ctx2.drawImage(image.toCanvas(), 0, 0);
-    const imgData = ctx2.getImageData(0, 0, canvas.width, canvas.height);
-    for(let i = 0; i < mask.data.length; i++) imgData.data[i*4+3] = mask.data[i];
-    ctx2.putImageData(imgData, 0, 0);
-    finalBlob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+    const resultBlob = await removeBackground(editedBlob, {
+      model: 'small',
+      output: { format: 'image/png', quality: 1.0 },
+      progress: (key, current, total) => {
+        if(key === 'compute:inference' && total > 0) {
+          const pct = Math.round(current / total * 100);
+          if(msgEl) msgEl.textContent = 'Removing background… ' + pct + '%';
+        }
+      }
+    });
+    finalBlob = resultBlob;
   } catch(e) {
     console.warn('BG removal failed, using original:', e.message);
     finalBlob = editedBlob;
