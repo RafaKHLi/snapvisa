@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+var _sv=null;try{_sv=JSON.parse(localStorage.getItem('sv_pending'));}catch(_e){}
+if(window.location.href.indexOf('paid=1')>-1&&_sv&&_sv.img){processedImageData=_sv.img;selectedSpec=_sv.spec;selectedCurrency=_sv.cur||'GBP';localStorage.removeItem('sv_pending');history.replaceState(null,'','/');goToStep(3);setTimeout(function(){document.getElementById('paywall-box').style.display='none';var sb=document.getElementById('success-box');if(sb)sb.classList.add('show');var _c=document.createElement('canvas'),_s=new Image();_s.onload=function(){_c.width=_s.width;_c.height=_s.height;_c.getContext('2d').drawImage(_s,0,0);var _l=document.getElementById('download-link');if(_l){_l.href=_c.toDataURL('image/jpeg',0.95);_l.download='snapvisa-'+(selectedSpec?selectedSpec.id:'photo')+'.jpg';}};_s.src=processedImageData;},400);}else{goToStep(1);}
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -1908,44 +1909,6 @@ function resetApp() {
   activeRegion='all';
   document.querySelectorAll('.region-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
   renderGrid(SPECS);
-  // Restore photo after Stripe payment
-  if(window.location.href.indexOf('paid=1') > -1) {
-    var pd = null;
-    try { pd = JSON.parse(localStorage.getItem('sv_pending')); } catch(e){}
-    if(pd && pd.img) {
-      processedImageData = pd.img;
-      selectedSpec = pd.spec;
-      selectedCurrency = pd.cur || 'GBP';
-      localStorage.removeItem('sv_pending');
-      history.replaceState(null,'','/');
-      goToStep(3);
-      setTimeout(function(){
-        document.getElementById('paywall-box').style.display='none';
-        var sb = document.getElementById('success-box');
-        if(sb) sb.classList.add('show');
-        var c2 = document.createElement('canvas');
-        var src2 = new Image();
-        src2.onload = function(){
-          c2.width=src2.width; c2.height=src2.height;
-          c2.getContext('2d').drawImage(src2,0,0);
-          var lnk=document.getElementById('download-link');
-          if(lnk){ lnk.href=c2.toDataURL('image/jpeg',0.95); lnk.download='snapvisa-'+(selectedSpec?selectedSpec.id:'photo')+'.jpg'; }
-        };
-        src2.src=processedImageData;
-      }, 400);
-    } else { history.replaceState(null,'','/'); }
-    return;
-  }
-    goToStep(1);
-      setTimeout(function(){ alert('Payment successful! ✅ Please re-upload your photo to download.'); }, 500);
-    }
-  } else {
-    goToStep(1);
-  }
-})()
-}
-
-function delay(ms){return new Promise(r=>setTimeout(r,ms));}
 
 // ═══════════════════════════════════════════
 // PROTECT PREVIEWS
