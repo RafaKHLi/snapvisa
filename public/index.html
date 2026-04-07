@@ -1463,20 +1463,22 @@ async function processPhoto() {
   await delay(600);
 
   // Composite: white background (official spec) + image
-  const bitmap = await createImageBitmap(finalBlob);
   const PX_W = selectedSpec.w * 17;
   const PX_H = selectedSpec.h * 17;
   const out = document.createElement('canvas');
   out.width = PX_W; out.height = PX_H;
-  const ctx = out.getContext('2d');
-  ctx.fillStyle = selectedSpec.bgColor || '#FFFFFF'; // use spec-defined background colour
-  ctx.fillRect(0,0,PX_W,PX_H);
-  const aspect = bitmap.width/bitmap.height;
-  const canvasAspect = PX_W/PX_H;
-  let dw,dh,dx,dy;
-  if(aspect>canvasAspect){ dh=PX_H; dw=dh*aspect; dx=(PX_W-dw)/2; dy=0; }
-  else { dw=PX_W; dh=dw/aspect; dx=0; dy=(PX_H-dh)*0.1; }
-  ctx.drawImage(bitmap,dx,dy,dw,dh);
+  const ctx = out.getContext('2d', { alpha: false });
+  // 1. Fill with required background colour (human bg will be replaced)
+  ctx.fillStyle = selectedSpec.bgColor || '#FFFFFF';
+  ctx.fillRect(0, 0, PX_W, PX_H);
+  // 2. Draw transparent subject on top — person stays, old background replaced
+  const bitmap = await createImageBitmap(finalBlob);
+  const aspect = bitmap.width / bitmap.height;
+  const canvasAspect = PX_W / PX_H;
+  let dw, dh, dx, dy;
+  if (aspect > canvasAspect) { dh = PX_H; dw = dh * aspect; dx = (PX_W - dw) / 2; dy = 0; }
+  else { dw = PX_W; dh = dw / aspect; dx = 0; dy = (PX_H - dh) * 0.1; }
+  ctx.drawImage(bitmap, dx, dy, dw, dh);
 
   setStep(3);
   await delay(500);
