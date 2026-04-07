@@ -118,8 +118,6 @@
   .step-tab.active .step-num { background: var(--accent); color: white; }
   .step-tab.done .step-num { background: var(--green); color: white; }
 
-  /* Currency select styling */
-  #currency-select option { background: #1f1d35; color: #eceaf5; }
   /* PANELS */
   .panel { padding: 2rem; display: none; }
   .panel.active { display: block; }
@@ -163,7 +161,7 @@
   }
   .country-btn:hover { border-color: var(--accent); background: var(--accent-light); }
   .country-btn.selected { border-color: var(--accent); background: var(--accent-light); }
-  .country-flag { font-size: 30px; display: block; margin-bottom: 8px; line-height: 1; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif; }
+  .country-flag { font-size: 30px; display: block; margin-bottom: 8px; line-height: 1; }
   .country-name { font-size: 14px; font-weight: 600; color: var(--ink); display: block; }
   .country-spec { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
   .selected-spec-box {
@@ -805,33 +803,33 @@
 // ═══════════════════════════════════════════
 const SPECS = [
   // EUROPE
-  { id:'uk-passport', flag:'🇬🇧', name:'UK Passport', doc:'UK Passport / Driving Licence', w:35, h:45, dpi:600, bg:'Plain light grey or cream', head:'29–34mm', bgColor:'#F5F5F0', region:'europe', seoKeyword:'uk passport photo online', verified:'Jan 2025', officialUrl:'https://www.gov.uk/photos-for-passports' },
-  { id:'schengen', flag:'🇪🇺', name:'Schengen Visa', doc:'Schengen / EU Visa', w:35, h:45, dpi:300, bg:'Plain white or off-white', head:'32–36mm', bgColor:'#FAFAFA', region:'europe', seoKeyword:'schengen visa photo online', verified:'Jan 2025', officialUrl:'https://home-affairs.ec.europa.eu/system/files/2021-01/annex_37b_icao_photograph_specifications_en.pdf' },
-  { id:'germany', flag:'🇩🇪', name:'Germany', doc:'German Passport / National Visa', w:35, h:45, dpi:300, bg:'Plain light grey', head:'32–36mm', bgColor:'#F5F5F2', region:'europe', seoKeyword:'german passport photo online', verified:'Jan 2025', officialUrl:'https://www.bmi.bund.de/EN/topics/security/identification-documents/passports-identity-cards/passport-photos/passport-photos-node.html' },
-  { id:'france', flag:'🇫🇷', name:'France', doc:'French Passport / Visa', w:35, h:45, dpi:300, bg:'Plain grey or white', head:'32–36mm', bgColor:'#F5F5F5', region:'europe', seoKeyword:'french passport photo online', verified:'Jan 2025', officialUrl:'https://france-visas.gouv.fr/en/web/france-visas/preparing-your-application' },
-  { id:'ireland', flag:'🇮🇪', name:'Ireland', doc:'Irish Passport', w:35, h:45, dpi:300, bg:'Plain white or off-white', head:'29–34mm', bgColor:'#FAFAFA', region:'europe', seoKeyword:'irish passport photo online', verified:'Jan 2025', officialUrl:'https://www.dfa.ie/passportinfo/how-to-apply/photo-guidelines/' },
+  { id:'uk-passport', cc:'gb', flag:'🇬🇧', name:'UK Passport', doc:'UK Passport / Driving Licence', w:35, h:45, dpi:600, bg:'Plain light grey or cream', head:'29–34mm', bgColor:'#F5F5F0', region:'europe', seoKeyword:'uk passport photo online', verified:'Jan 2025', officialUrl:'https://www.gov.uk/photos-for-passports' },
+  { id:'schengen', cc:'eu', flag:'🇪🇺', name:'Schengen Visa', doc:'Schengen / EU Visa', w:35, h:45, dpi:300, bg:'Plain white or off-white', head:'32–36mm', bgColor:'#FAFAFA', region:'europe', seoKeyword:'schengen visa photo online', verified:'Jan 2025', officialUrl:'https://home-affairs.ec.europa.eu/system/files/2021-01/annex_37b_icao_photograph_specifications_en.pdf' },
+  { id:'germany', cc:'de', flag:'🇩🇪', name:'Germany', doc:'German Passport / National Visa', w:35, h:45, dpi:300, bg:'Plain light grey', head:'32–36mm', bgColor:'#F5F5F2', region:'europe', seoKeyword:'german passport photo online', verified:'Jan 2025', officialUrl:'https://www.bmi.bund.de/EN/topics/security/identification-documents/passports-identity-cards/passport-photos/passport-photos-node.html' },
+  { id:'france', cc:'fr', flag:'🇫🇷', name:'France', doc:'French Passport / Visa', w:35, h:45, dpi:300, bg:'Plain grey or white', head:'32–36mm', bgColor:'#F5F5F5', region:'europe', seoKeyword:'french passport photo online', verified:'Jan 2025', officialUrl:'https://france-visas.gouv.fr/en/web/france-visas/preparing-your-application' },
+  { id:'ireland', cc:'ie', flag:'🇮🇪', name:'Ireland', doc:'Irish Passport', w:35, h:45, dpi:300, bg:'Plain white or off-white', head:'29–34mm', bgColor:'#FAFAFA', region:'europe', seoKeyword:'irish passport photo online', verified:'Jan 2025', officialUrl:'https://www.dfa.ie/passportinfo/how-to-apply/photo-guidelines/' },
   // AMERICAS
-  { id:'us-visa', flag:'🇺🇸', name:'US Visa / Passport', doc:'US Visa / Passport', w:51, h:51, dpi:300, bg:'Plain white', head:'25–35mm', bgColor:'#FFFFFF', region:'americas', seoKeyword:'us passport photo online', verified:'Jan 2025', officialUrl:'https://travel.state.gov/content/travel/en/passports/need-passport/photos.html' },
-  { id:'canada', flag:'🇨🇦', name:'Canada', doc:'Canada eTA / Passport', w:50, h:70, dpi:300, bg:'Plain white', head:'31–36mm', bgColor:'#FFFFFF', region:'americas', seoKeyword:'canada passport photo online', verified:'Jan 2025', officialUrl:'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html' },
-  { id:'brazil', flag:'🇧🇷', name:'Brazil', doc:'Brazilian Passport / Visa', w:30, h:40, dpi:300, bg:'Plain white', head:'25–32mm', bgColor:'#FFFFFF', region:'americas', seoKeyword:'brazil visa photo online', verified:'Jan 2025', officialUrl:'https://www.gov.br/pf/en/subjects/passport/requirements' },
+  { id:'us-visa', cc:'us', flag:'🇺🇸', name:'US Visa / Passport', doc:'US Visa / Passport', w:51, h:51, dpi:300, bg:'Plain white', head:'25–35mm', bgColor:'#FFFFFF', region:'americas', seoKeyword:'us passport photo online', verified:'Jan 2025', officialUrl:'https://travel.state.gov/content/travel/en/passports/need-passport/photos.html' },
+  { id:'canada', cc:'ca', flag:'🇨🇦', name:'Canada', doc:'Canada eTA / Passport', w:50, h:70, dpi:300, bg:'Plain white', head:'31–36mm', bgColor:'#FFFFFF', region:'americas', seoKeyword:'canada passport photo online', verified:'Jan 2025', officialUrl:'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html' },
+  { id:'brazil', cc:'br', flag:'🇧🇷', name:'Brazil', doc:'Brazilian Passport / Visa', w:30, h:40, dpi:300, bg:'Plain white', head:'25–32mm', bgColor:'#FFFFFF', region:'americas', seoKeyword:'brazil visa photo online', verified:'Jan 2025', officialUrl:'https://www.gov.br/pf/en/subjects/passport/requirements' },
   // ASIA
-  { id:'india-visa', flag:'🇮🇳', name:'India', doc:'India Visa / OCI / Passport', w:51, h:51, dpi:300, bg:'Plain white', head:'26–35mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'india visa photo online', verified:'Jan 2025', officialUrl:'https://indianvisaonline.gov.in/visa/PhotoRequirements.pdf' },
-  { id:'china-visa', flag:'🇨🇳', name:'China', doc:'China Visa', w:33, h:48, dpi:300, bg:'Plain white', head:'28–33mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'china visa photo online', verified:'Jan 2025', officialUrl:'https://www.visaforchina.cn/globle/applicants_guide/photo_specifications/' },
-  { id:'japan', flag:'🇯🇵', name:'Japan', doc:'Japan Visa', w:45, h:45, dpi:300, bg:'Plain white', head:'30–36mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'japan visa photo online', verified:'Jan 2025', officialUrl:'https://www.mofa.go.jp/j_info/visit/visa/index.html' },
-  { id:'thailand', flag:'🇹🇭', name:'Thailand', doc:'Thailand Visa / e-Visa', w:35, h:45, dpi:300, bg:'Plain white', head:'27–35mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'thailand visa photo online', verified:'Jan 2025', officialUrl:'https://www.thaievisa.go.th' },
-  { id:'philippines', flag:'🇵🇭', name:'Philippines', doc:'Philippines Passport / Visa', w:35, h:45, dpi:300, bg:'Plain white', head:'28–34mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'philippines passport photo online', verified:'Jan 2025', officialUrl:'https://dfa.gov.ph/passport/passport-requirements' },
-  { id:'pakistan', flag:'🇵🇰', name:'Pakistan', doc:'Pakistan Visa / Passport', w:35, h:45, dpi:300, bg:'Plain white', head:'29–35mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'pakistan passport photo online', verified:'Jan 2025', officialUrl:'https://dgip.gov.pk/service/machinereadablepassport' },
+  { id:'india-visa', cc:'in', flag:'🇮🇳', name:'India', doc:'India Visa / OCI / Passport', w:51, h:51, dpi:300, bg:'Plain white', head:'26–35mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'india visa photo online', verified:'Jan 2025', officialUrl:'https://indianvisaonline.gov.in/visa/PhotoRequirements.pdf' },
+  { id:'china-visa', cc:'cn', flag:'🇨🇳', name:'China', doc:'China Visa', w:33, h:48, dpi:300, bg:'Plain white', head:'28–33mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'china visa photo online', verified:'Jan 2025', officialUrl:'https://www.visaforchina.cn/globle/applicants_guide/photo_specifications/' },
+  { id:'japan', cc:'jp', flag:'🇯🇵', name:'Japan', doc:'Japan Visa', w:45, h:45, dpi:300, bg:'Plain white', head:'30–36mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'japan visa photo online', verified:'Jan 2025', officialUrl:'https://www.mofa.go.jp/j_info/visit/visa/index.html' },
+  { id:'thailand', cc:'th', flag:'🇹🇭', name:'Thailand', doc:'Thailand Visa / e-Visa', w:35, h:45, dpi:300, bg:'Plain white', head:'27–35mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'thailand visa photo online', verified:'Jan 2025', officialUrl:'https://www.thaievisa.go.th' },
+  { id:'philippines', cc:'ph', flag:'🇵🇭', name:'Philippines', doc:'Philippines Passport / Visa', w:35, h:45, dpi:300, bg:'Plain white', head:'28–34mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'philippines passport photo online', verified:'Jan 2025', officialUrl:'https://dfa.gov.ph/passport/passport-requirements' },
+  { id:'pakistan', cc:'pk', flag:'🇵🇰', name:'Pakistan', doc:'Pakistan Visa / Passport', w:35, h:45, dpi:300, bg:'Plain white', head:'29–35mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'pakistan passport photo online', verified:'Jan 2025', officialUrl:'https://dgip.gov.pk/service/machinereadablepassport' },
   // MIDDLE EAST
-  { id:'uae-visa', flag:'🇦🇪', name:'UAE / Dubai', doc:'UAE Visa / Emirates ID', w:43, h:55, dpi:300, bg:'Plain white', head:'30–36mm', bgColor:'#FFFFFF', region:'middleeast', seoKeyword:'uae visa photo online', verified:'Jan 2025', officialUrl:'https://icp.gov.ae/en/services/category/emirates-id' },
-  { id:'saudi', flag:'🇸🇦', name:'Saudi Arabia', doc:'Saudi Arabia Visa', w:40, h:60, dpi:300, bg:'Plain white', head:'30–36mm', bgColor:'#FFFFFF', region:'middleeast', seoKeyword:'saudi visa photo online', verified:'Jan 2025', officialUrl:'https://visa.mofa.gov.sa' },
+  { id:'uae-visa', cc:'ae', flag:'🇦🇪', name:'UAE / Dubai', doc:'UAE Visa / Emirates ID', w:43, h:55, dpi:300, bg:'Plain white', head:'30–36mm', bgColor:'#FFFFFF', region:'middleeast', seoKeyword:'uae visa photo online', verified:'Jan 2025', officialUrl:'https://icp.gov.ae/en/services/category/emirates-id' },
+  { id:'saudi', cc:'sa', flag:'🇸🇦', name:'Saudi Arabia', doc:'Saudi Arabia Visa', w:40, h:60, dpi:300, bg:'Plain white', head:'30–36mm', bgColor:'#FFFFFF', region:'middleeast', seoKeyword:'saudi visa photo online', verified:'Jan 2025', officialUrl:'https://visa.mofa.gov.sa' },
   // OCEANIA
-  { id:'australia', flag:'🇦🇺', name:'Australia', doc:'Australia Passport / Visa', w:35, h:45, dpi:300, bg:'Plain white or off-white', head:'30–36mm', bgColor:'#FAFAFA', region:'oceania', seoKeyword:'australia passport photo online', verified:'Jan 2025', officialUrl:'https://www.passports.gov.au/photos' },
-  { id:'new-zealand', flag:'🇳🇿', name:'New Zealand', doc:'New Zealand Passport', w:35, h:45, dpi:300, bg:'Plain white or light grey', head:'29–34mm', bgColor:'#FAFAFA', region:'oceania', seoKeyword:'new zealand passport photo online', verified:'Jan 2025', officialUrl:'https://www.govt.nz/browse/passports-and-travel/nz-passports/photo-requirements-for-nz-passports/' },
+  { id:'australia', cc:'au', flag:'🇦🇺', name:'Australia', doc:'Australia Passport / Visa', w:35, h:45, dpi:300, bg:'Plain white or off-white', head:'30–36mm', bgColor:'#FAFAFA', region:'oceania', seoKeyword:'australia passport photo online', verified:'Jan 2025', officialUrl:'https://www.passports.gov.au/photos' },
+  { id:'new-zealand', cc:'nz', flag:'🇳🇿', name:'New Zealand', doc:'New Zealand Passport', w:35, h:45, dpi:300, bg:'Plain white or light grey', head:'29–34mm', bgColor:'#FAFAFA', region:'oceania', seoKeyword:'new zealand passport photo online', verified:'Jan 2025', officialUrl:'https://www.govt.nz/browse/passports-and-travel/nz-passports/photo-requirements-for-nz-passports/' },
   // AFRICA
-  { id:'nigeria', flag:'🇳🇬', name:'Nigeria', doc:'Nigeria Passport / Visa', w:35, h:45, dpi:300, bg:'Plain white', head:'28–34mm', bgColor:'#FFFFFF', region:'africa', seoKeyword:'nigeria passport photo online', verified:'Jan 2025', officialUrl:'https://immigration.gov.ng/international-passport-2/' },
+  { id:'nigeria', cc:'ng', flag:'🇳🇬', name:'Nigeria', doc:'Nigeria Passport / Visa', w:35, h:45, dpi:300, bg:'Plain white', head:'28–34mm', bgColor:'#FFFFFF', region:'africa', seoKeyword:'nigeria passport photo online', verified:'Jan 2025', officialUrl:'https://immigration.gov.ng/international-passport-2/' },
   // ASIA (additional)
-  { id:'hong-kong', flag:'🇭🇰', name:'Hong Kong', doc:'HKSAR Passport / HKID', w:40, h:50, dpi:300, bg:'Plain white or off-white', head:'29–34mm', bgColor:'#FAFAFA', region:'asia', seoKeyword:'hong kong passport photo online', verified:'Jan 2025', officialUrl:'https://www.immd.gov.hk/eng/services/hksar_passport/photo_guidelines.html' },
-  { id:'taiwan', flag:'🇹🇼', name:'Taiwan', doc:'Taiwan Passport / ARC', w:35, h:45, dpi:300, bg:'Plain white', head:'29–34mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'taiwan passport photo online', verified:'Jan 2025', officialUrl:'https://www.immigration.gov.tw/5382/5385/7244/7250/' },
+  { id:'hong-kong', cc:'hk', flag:'🇭🇰', name:'Hong Kong', doc:'HKSAR Passport / HKID', w:40, h:50, dpi:300, bg:'Plain white or off-white', head:'29–34mm', bgColor:'#FAFAFA', region:'asia', seoKeyword:'hong kong passport photo online', verified:'Jan 2025', officialUrl:'https://www.immd.gov.hk/eng/services/hksar_passport/photo_guidelines.html' },
+  { id:'taiwan', cc:'tw', flag:'🇹🇼', name:'Taiwan', doc:'Taiwan Passport / ARC', w:35, h:45, dpi:300, bg:'Plain white', head:'29–34mm', bgColor:'#FFFFFF', region:'asia', seoKeyword:'taiwan passport photo online', verified:'Jan 2025', officialUrl:'https://www.immigration.gov.tw/5382/5385/7244/7250/' },
 ];
 
 let selectedSpec = null;
@@ -850,7 +848,8 @@ function renderGrid(specs) {
     const btn = document.createElement('button');
     btn.className = 'country-btn';
     if(selectedSpec && selectedSpec.id === s.id) btn.classList.add('selected');
-    btn.innerHTML = `<span class="country-flag">${s.flag}</span><span class="country-name">${s.name}</span><span class="country-spec">${s.w}×${s.h}mm</span>`;
+    const flagEl = s.cc ? '<img src="https://flagcdn.com/32x24/'+s.cc+'.png" width="32" height="24" alt="'+s.name+'" style="border-radius:2px;object-fit:cover;display:block;margin-bottom:8px;" loading="lazy">' : '<span class="country-flag">'+s.flag+'</span>';
+    btn.innerHTML = flagEl + '<span class="country-name">'+s.name+'</span><span class="country-spec">'+s.w+'×'+s.h+'mm</span>';
     btn.onclick = () => selectCountry(s, btn);
     grid.appendChild(btn);
   });
