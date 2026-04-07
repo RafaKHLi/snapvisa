@@ -1439,10 +1439,9 @@ async function processPhoto() {
   const editedBlob = await new Promise(r => sendCanvas.toBlob(r,'image/jpeg',0.85));
 
   setStep(1);
-  const apiKey = document.getElementById('api-key-input').value.trim();
   let finalBlob;
   try {
-    // Browser-side AI — free, no API, runs locally in user's browser
+    // Browser-side AI — free, private, no API needed
     const { removeBackground } = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/browser/index.mjs');
     const resultBlob = await removeBackground(editedBlob, {
       model: 'small',
@@ -1457,7 +1456,7 @@ async function processPhoto() {
     });
     finalBlob = resultBlob;
   } catch(e) {
-    console.warn('BG removal failed:', e.message);
+    console.warn('BG removal failed, using original:', e.message);
     finalBlob = editedBlob;
   }
   setStep(2);
