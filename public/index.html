@@ -1871,23 +1871,22 @@ async async function doPayment() {
     chk.focus(); return;
   }
   const btn = document.getElementById('pay-btn');
-  btn.textContent='Processing…'; btn.disabled=true;
-  setTimeout(()=>{
-    document.getElementById('paywall-box').style.display='none';
-    document.getElementById('success-box').classList.add('show');
-    // Clean download — NO watermark
-    const c = document.createElement('canvas');
-    const src = new Image();
-    src.onload=()=>{
-      c.width=src.width; c.height=src.height;
-      c.getContext('2d').drawImage(src,0,0); // clean, no stamp
-      const link=document.getElementById('download-link');
-      link.href=c.toDataURL('image/jpeg',0.95);
-      link.download=`snapvisa-${selectedSpec.id}.jpg`;
-    };
-    src.src=processedImageData;
-  },1800);
+  btn.textContent='Redirecting to Stripe…'; btn.disabled=true;
+  try {
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ priceId: selectedPrice, currency: selectedCurrency })
+    });
+    const data = await res.json();
+    if(data.url) { window.location.href = data.url; return; }
+    throw new Error(data.error || 'Checkout failed');
+  } catch(e) {
+    btn.textContent='Pay with Stripe →'; btn.disabled=false;
+    alert('Payment error: ' + e.message);
+  }
 }
+
 
 // ═══════════════════════════════════════════
 // RESET
