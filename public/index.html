@@ -1441,22 +1441,12 @@ async function processPhoto() {
   setStep(1);
   let finalBlob;
   try {
-    const msgEl = document.getElementById('processing-msg');
-    if(msgEl) msgEl.textContent = 'Loading AI model…';
-    // esm.sh resolves all deps including onnxruntime-web
-    const { removeBackground } = await import('https://esm.sh/@imgly/background-removal@1.7.0');
-    if(msgEl) msgEl.textContent = 'Removing background…';
-    const resultBlob = await removeBackground(editedBlob, {
-      model: 'small',
-      output: { format: 'image/png', quality: 1.0 },
-      progress: (key, current, total) => {
-        if(key === 'compute:inference' && total > 0) {
-          const pct = Math.round(current / total * 100);
-          if(msgEl) msgEl.textContent = 'Removing background… ' + pct + '%';
-        }
-      }
-    });
-    finalBlob = resultBlob;
+    // Server-side remove.bg API — proven reliable
+    const fd = new FormData();
+    fd.append('image_file', editedBlob, 'photo.png');
+    const resp = await fetch('/api/remove-bg', { method: 'POST', body: fd });
+    if (!resp.ok) throw new Error('remove-bg status ' + resp.status);
+    finalBlob = await resp.blob();
   } catch(e) {
     console.warn('BG removal failed, using original:', e.message);
     finalBlob = editedBlob;
