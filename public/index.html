@@ -1865,25 +1865,27 @@ function selectPrice(p) {
 }
 
 function doPayment() {
-  const chk = document.getElementById('disclaimer-check');
+  (async () => {
+    const chk = document.getElementById('disclaimer-check');
   if(chk && !chk.checked) {
     document.getElementById('disclaimer-box').style.border='1.5px solid var(--red)';
     chk.focus(); return;
   }
   const btn = document.getElementById('pay-btn');
   btn.textContent='Redirecting to Stripe…'; btn.disabled=true;
-  fetch('/api/checkout', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({priceId:selectedPrice, currency:selectedCurrency})
-  }).then(r=>r.json()).then(data=>{
-    if(data.url){ window.location.href=data.url; return; }
+  try {
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ priceId: selectedPrice, currency: selectedCurrency })
+    });
+    const data = await res.json();
+    if(data.url) { window.location.href = data.url; return; }
+    throw new Error(data.error || 'Checkout failed');
+  } catch(e) {
     btn.textContent='Pay with Stripe →'; btn.disabled=false;
-    alert('Checkout failed: '+(data.error||'unknown'));
-  }).catch(e=>{
-    btn.textContent='Pay with Stripe →'; btn.disabled=false;
-    alert('Payment error: '+e.message);
-  });
+    alert('Payment error: ' + e.message);
+  }
 }
 
 
