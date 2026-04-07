@@ -1864,8 +1864,9 @@ function selectPrice(p) {
   updatePrices();
 }
 
-async async function doPayment() {
-  const chk = document.getElementById('disclaimer-check');
+async function doPayment() {
+  (async () => {
+    const chk = document.getElementById('disclaimer-check');
   if(chk && !chk.checked) {
     document.getElementById('disclaimer-box').style.border='1.5px solid var(--red)';
     chk.focus(); return;
