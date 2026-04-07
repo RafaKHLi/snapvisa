@@ -118,6 +118,8 @@
   .step-tab.active .step-num { background: var(--accent); color: white; }
   .step-tab.done .step-num { background: var(--green); color: white; }
 
+  /* Currency dropdown: white bg + dark text so options are readable */
+  #currency-select option { background: #ffffff !important; color: #111111 !important; }
   /* PANELS */
   .panel { padding: 2rem; display: none; }
   .panel.active { display: block; }
@@ -722,7 +724,7 @@
           <div class="paywall-title" style="margin-bottom:0;">Download your photo</div>
           <div style="display:flex;align-items:center;gap:6px;">
             <span style="font-size:12px;color:#aaa;">Currency:</span>
-            <select id="currency-select" onchange="updatePrices()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:white;font-size:13px;padding:4px 8px;cursor:pointer;font-family:'DM Sans',sans-serif;">
+            <select id="currency-select" onchange="updatePrices()" style="background:#2a2840;border:1px solid #4a4770;border-radius:6px;color:#eceaf5;font-size:13px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:130px;">
               <option value="GBP">GBP £</option>
               <option value="USD">USD $</option>
               <option value="EUR">EUR €</option>
