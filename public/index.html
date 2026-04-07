@@ -1441,12 +1441,22 @@ async function processPhoto() {
   setStep(1);
   let finalBlob;
   try {
-    // Server-side remove.bg API — proven reliable
-    const fd = new FormData();
-    fd.append('image_file', editedBlob, 'photo.png');
-    const resp = await fetch('/api/remove-bg', { method: 'POST', body: fd });
-    if (!resp.ok) throw new Error('remove-bg status ' + resp.status);
-    finalBlob = await resp.blob();
+    const msgEl = document.getElementById('processing-msg');
+    if(msgEl) msgEl.textContent = 'Loading AI model…';
+    // esm.sh resolves all deps including onnxruntime-web
+    const { removeBackground } = await import('https://esm.sh/@imgly/background-removal@1.7.0');
+    if(msgEl) msgEl.textContent = 'Removing background…';
+    const resultBlob = await removeBackground(editedBlob, {
+      model: 'small',
+      output: { format: 'image/png', quality: 1.0 },
+      progress: (key, current, total) => {
+        if(key === 'compute:inference' && total > 0) {
+          const pct = Math.round(current / total * 100);
+          if(msgEl) msgEl.textContent = 'Removing background… ' + pct + '%';
+        }
+      }
+    });
+    finalBlob = resultBlob;
   } catch(e) {
     console.warn('BG removal failed, using original:', e.message);
     finalBlob = editedBlob;
@@ -1460,7 +1470,7 @@ async function processPhoto() {
   const PX_H = selectedSpec.h * 17;
   const out = document.createElement('canvas');
   out.width = PX_W; out.height = PX_H;
-  const ctx = out.getContext('2d');
+  const ctx = out.getContext('2d', { alpha: false }); // opaque: bgColor always visible
   ctx.fillStyle = selectedSpec.bgColor || '#FFFFFF'; // use spec-defined background colour
   ctx.fillRect(0,0,PX_W,PX_H);
   const aspect = bitmap.width/bitmap.height;
