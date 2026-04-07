@@ -1873,6 +1873,7 @@ function doPayment() {
   var btn = document.getElementById('pay-btn');
   btn.textContent='Redirecting to Stripe…'; btn.disabled=true;
   sessionStorage.setItem('snapvisa_pending',JSON.stringify({img:processedImageData,spec:selectedSpec,cur:selectedCurrency}));
+  try{sessionStorage.setItem('sv_photo',processedImageData);sessionStorage.setItem('sv_spec',JSON.stringify(selectedSpec));}catch(e){}
   fetch('/api/checkout', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
@@ -1937,7 +1938,41 @@ function resetApp() {
       } catch(e){}
     }
   }
+    (function(){
+  var _p = new URLSearchParams(window.location.search);
+  if(_p.has('session_id')) {
+    var _ph = sessionStorage.getItem('sv_photo');
+    var _sp = sessionStorage.getItem('sv_spec');
+    sessionStorage.removeItem('sv_photo');
+    sessionStorage.removeItem('sv_spec');
+    window.history.replaceState({},'','/');
+    if(_ph && _sp) {
+      processedImageData = _ph;
+      selectedSpec = JSON.parse(_sp);
+      goToStep(3);
+      setTimeout(function(){
+        var sb = document.getElementById('success-box');
+        if(sb) sb.classList.add('show');
+        var pb = document.getElementById('paywall-box');
+        if(pb) pb.style.display='none';
+        var src = new Image();
+        src.onload = function(){
+          var c = document.createElement('canvas');
+          c.width=src.width; c.height=src.height;
+          c.getContext('2d').drawImage(src,0,0);
+          var lnk = document.getElementById('download-link');
+          if(lnk){ lnk.href=c.toDataURL('image/jpeg',0.95); lnk.download='snapvisa-'+selectedSpec.id+'.jpg'; }
+        };
+        src.src=processedImageData;
+      }, 400);
+    } else {
+      goToStep(1);
+      setTimeout(function(){ alert('Payment successful! ✅ Please re-upload your photo to download.'); }, 500);
+    }
+  } else {
     goToStep(1);
+  }
+})()
 }
 
 function delay(ms){return new Promise(r=>setTimeout(r,ms));}
