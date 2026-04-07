@@ -905,13 +905,13 @@ function goToStep(n) {
     if(i===n) t.classList.add('active');
     if(i<n) t.classList.add('done');
   });
-  // Hide hero on steps 2/3, show on step 1
+  // Hide hero on steps 2/3 to give more space
   const hero = document.querySelector('.hero');
   if(hero) hero.style.display = (n === 1) ? '' : 'none';
-  // Scroll main card into view
+  // Scroll to step tabs
   setTimeout(() => {
-    const card = document.querySelector('.main-card');
-    if(card) window.scrollTo({ top: card.offsetTop - 70, behavior: 'smooth' });
+    const tabs = document.querySelector('.step-tabs');
+    if(tabs) window.scrollTo({ top: tabs.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' });
   }, 50);
   if(n===2 && selectedSpec) {
     document.getElementById('p2-flag').textContent = selectedSpec.flag;
