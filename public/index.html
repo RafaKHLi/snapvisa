@@ -1872,6 +1872,7 @@ function doPayment() {
   }
   var btn = document.getElementById('pay-btn');
   btn.textContent='Redirecting to Stripe…'; btn.disabled=true;
+  sessionStorage.setItem('snapvisa_pending',JSON.stringify({img:processedImageData,spec:selectedSpec,cur:selectedCurrency}));
   fetch('/api/checkout', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
@@ -1906,7 +1907,37 @@ function resetApp() {
   activeRegion='all';
   document.querySelectorAll('.region-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
   renderGrid(SPECS);
-  goToStep(1);
+  // Detect return from successful Stripe payment
+  if(window.location.search.includes('paid=1')) {
+    var pending = sessionStorage.getItem('snapvisa_pending');
+    if(pending) {
+      try {
+        var pd = JSON.parse(pending);
+        processedImageData = pd.img;
+        selectedSpec = pd.spec;
+        selectedCurrency = pd.cur || 'GBP';
+        sessionStorage.removeItem('snapvisa_pending');
+        history.replaceState(null,'','/');
+        goToStep(3);
+        setTimeout(function(){
+          document.getElementById('paywall-box').style.display='none';
+          var sb = document.getElementById('success-box');
+          sb.classList.add('show');
+          var c = document.createElement('canvas');
+          var src = new Image();
+          src.onload = function(){
+            c.width=src.width; c.height=src.height;
+            c.getContext('2d').drawImage(src,0,0);
+            var link=document.getElementById('download-link');
+            link.href=c.toDataURL('image/jpeg',0.95);
+            link.download='snapvisa-'+(selectedSpec?selectedSpec.id:'photo')+'.jpg';
+          };
+          src.src=processedImageData;
+        }, 300);
+      } catch(e){}
+    }
+  }
+    goToStep(1);
 }
 
 function delay(ms){return new Promise(r=>setTimeout(r,ms));}
