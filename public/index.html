@@ -421,8 +421,8 @@
   .btn-ghost:hover { background: var(--cream); }
   .btn-row-footer { display: flex; gap: 10px; margin-top: 1.5rem; justify-content: flex-end; }
 
-  /* API KEY BANNER */
-  .api-banner {
+  /* API KEY BANNER - hidden server-side */
+  .api-banner { display: none !important; 
     background: #FFF8E1;
     border: 1px solid #FFD54F;
     border-radius: var(--radius);
@@ -484,12 +484,7 @@
 
   <!-- PANEL 1: COUNTRY -->
   <div class="panel active" id="panel-1">
-    <div class="api-banner" id="api-banner">
-      <div>
-        <strong>Developer mode</strong> — Enter your <a href="https://www.remove.bg/api" target="_blank">remove.bg API key</a> to enable live background removal. Leave blank for demo mode.
-        <input type="password" id="api-key-input" placeholder="Your remove.bg API key..." />
-      </div>
-    </div>
+        </div>
     <h3 style="font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:1rem;">Select your region &amp; document type</h3>
     <div class="search-row"><input type="text" id="country-search" placeholder="Search country or document..." oninput="filterCountries()" /></div>
     <div class="region-tabs">
