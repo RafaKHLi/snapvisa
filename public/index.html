@@ -1420,7 +1420,14 @@ async function processPhoto() {
   const clean = document.createElement('canvas');
   clean.width=boxW; clean.height=boxH;
   clean.getContext('2d').putImageData(merged,0,0);
-  const editedBlob = await new Promise(r => clean.toBlob(r,'image/jpeg',0.95));
+  // Compress for remove.bg: cap at 1000px, 0.85 quality — faster upload, same result
+  const MAX_SEND = 1000;
+  let sw = clean.width, sh = clean.height;
+  if(sw > MAX_SEND || sh > MAX_SEND) { const sc = MAX_SEND/Math.max(sw,sh); sw=Math.round(sw*sc); sh=Math.round(sh*sc); }
+  const sendCanvas = document.createElement('canvas');
+  sendCanvas.width=sw; sendCanvas.height=sh;
+  sendCanvas.getContext('2d').drawImage(clean,0,0,sw,sh);
+  const editedBlob = await new Promise(r => sendCanvas.toBlob(r,'image/jpeg',0.85));
 
   setStep(1);
   const apiKey = document.getElementById('api-key-input').value.trim();
