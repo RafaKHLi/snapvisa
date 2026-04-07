@@ -1,15 +1,18 @@
 export async function POST(request) {
   try {
-    const blob = await request.blob()
-
-    const formData = new FormData()
-    formData.append('image_file', blob, 'photo.jpg')
-    formData.append('size', 'auto')
+    const formData = await request.formData()
+    const imageFile = formData.get('image_file')
+    
+    const outForm = new FormData()
+    // Ensure correct content-type by creating a new Blob with explicit type
+    const blob = new Blob([await imageFile.arrayBuffer()], { type: 'image/png' })
+    outForm.append('image_file', blob, 'photo.png')
+    outForm.append('size', 'auto')
 
     const response = await fetch('https://api.remove.bg/v1.0/removebg', {
       method: 'POST',
       headers: { 'X-Api-Key': process.env.REMOVE_BG_API_KEY },
-      body: formData,
+      body: outForm,
     })
 
     if (!response.ok) {
