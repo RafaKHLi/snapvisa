@@ -1440,14 +1440,15 @@ async function processPhoto() {
 
   setStep(1);
   let finalBlob;
-  const msgEl2 = document.getElementById('processing-msg');
+  const msgEl = document.getElementById('processing-msg');
   try {
-    if(msgEl2) msgEl2.textContent = 'Removing background…';
+    if(msgEl) msgEl.textContent = 'Removing background…';
     const fd = new FormData();
     fd.append('image_file', editedBlob, 'photo.png');
     const resp = await fetch('/api/remove-bg', { method: 'POST', body: fd });
-    if (!resp.ok) throw new Error('remove-bg status ' + resp.status);
+    if (!resp.ok) throw new Error('remove-bg ' + resp.status);
     finalBlob = await resp.blob();
+    console.log('BG removal OK, blob size:', finalBlob.size, 'type:', finalBlob.type);
   } catch(e) {
     console.warn('BG removal failed, using original:', e.message);
     finalBlob = editedBlob;
