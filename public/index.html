@@ -908,6 +908,15 @@ function goToStep(n) {
   // Hide hero on steps 2/3 to give more space
   const hero = document.querySelector('.hero');
   if(hero) hero.style.display = (n === 1) ? '' : 'none';
+  // Hide/show orphaned country elements that live outside panel-1
+  const countryOrphans = [
+    document.querySelector('.main-card > h3'),
+    document.querySelector('.main-card > .search-row'),
+    document.querySelector('.main-card > .region-tabs'),
+    document.getElementById('country-count'),
+    document.getElementById('country-grid'),
+  ].filter(Boolean);
+  countryOrphans.forEach(el => el.style.display = (n === 1) ? '' : 'none');
   // Scroll to step tabs
   setTimeout(() => {
     const tabs = document.querySelector('.step-tabs');
