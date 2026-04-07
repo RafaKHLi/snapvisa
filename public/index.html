@@ -133,12 +133,12 @@
   .country-count { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
   .country-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
     margin-bottom: 1.5rem;
   }
   .country-btn {
-    padding: 12px 10px;
+    padding: 16px 14px;
     border: 1.5px solid var(--border);
     border-radius: var(--radius);
     background: var(--white);
@@ -147,12 +147,15 @@
     transition: all 0.15s;
     font-family: 'DM Sans', sans-serif;
     color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
   .country-btn:hover { border-color: var(--accent); background: var(--accent-light); }
   .country-btn.selected { border-color: var(--accent); background: var(--accent-light); }
-  .country-flag { font-size: 26px; display: block; margin-bottom: 6px; line-height: 1; }
-  .country-name { font-size: 13px; font-weight: 500; color: var(--ink); display: block; }
-  .country-spec { font-size: 11px; color: var(--muted); display: block; }
+  .country-flag { font-size: 30px; display: block; margin-bottom: 8px; line-height: 1; }
+  .country-name { font-size: 14px; font-weight: 600; color: var(--ink); display: block; }
+  .country-spec { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
   .selected-spec-box {
     background: var(--accent-light);
     border: 1px solid var(--accent);
