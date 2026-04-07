@@ -38,7 +38,7 @@ export async function POST(request) {
       payment_method_types: ['card'],
       line_items: [{ price_data: { currency: priceData.currency, product_data: { name: priceData.name }, unit_amount: priceData.amount }, quantity: 1 }],
       mode: 'payment',
-      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${baseUrl}/?paid=1`,
       cancel_url: `${baseUrl}`,
     })
     return Response.json({ url: session.url })
