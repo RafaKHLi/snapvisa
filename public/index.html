@@ -1469,7 +1469,7 @@ async function processPhoto() {
   const out = document.createElement('canvas');
   out.width = PX_W; out.height = PX_H;
   const ctx = out.getContext('2d');
-  ctx.fillStyle = '#FFFFFF'; // white — official requirement for all supported countries
+  ctx.fillStyle = selectedSpec.bgColor || '#FFFFFF'; // use spec-defined background colour
   ctx.fillRect(0,0,PX_W,PX_H);
   const aspect = bitmap.width/bitmap.height;
   const canvasAspect = PX_W/PX_H;
