@@ -354,7 +354,7 @@
   }
   .paywall-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 6px; }
   .paywall-sub { font-size: 13px; color: #aaa; margin-bottom: 1.25rem; }
-  .price-options { display: block; margin-bottom: 1rem; }
+  .price-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
   .price-opt {
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.15);
@@ -744,10 +744,15 @@
         </div>
         <div class="paywall-sub">Remove the watermark and get your print-ready file</div>
         <div class="price-options">
-          <div class="price-opt selected" id="opt-single" style="cursor:default;">
+          <div class="price-opt selected" id="opt-single" onclick="selectPrice('single')">
             <span class="price-opt-name">Single photo</span>
             <span class="price-opt-price" id="price-single">£1.99</span>
             <span class="price-opt-desc">Full-res JPG + PDF sheet</span>
+          </div>
+          <div class="price-opt" id="opt-bundle" onclick="selectPrice('bundle')">
+            <span class="price-opt-name">5-photo bundle</span>
+            <span class="price-opt-price" id="price-bundle">£4.99</span>
+            <span class="price-opt-desc">Any 5 photos, 30 days</span>
           </div>
         </div>
         <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;" id="disclaimer-box">
@@ -1850,17 +1855,18 @@ function updatePrices() {
   if(!c) return;
   const dec = c.single >= 10 ? 0 : 2;
   document.getElementById('price-single').textContent = `${c.symbol}${c.single.toFixed(dec)}`;
-  document.getElementById('price-bundle').textContent = `${c.symbol}${c.bundle.toFixed(dec)}`;
+  const bundleEl = document.getElementById('price-bundle'); if(bundleEl) bundleEl.textContent = `${c.symbol}${c.bundle.toFixed(dec)}`;
   const pb = document.getElementById('pay-btn');
   if(pb && !pb.disabled) {
-    const price = selectedPrice==='single'?c.single:c.bundle;
+    const price = c.single;
     pb.textContent = `Pay ${c.symbol}${price.toFixed(dec)} with Stripe →`;
   }
 }
 
 function selectPrice(p) {
   selectedPrice = p;
-  document.getElementById('opt-single').classList.add('selected');
+  document.getElementById('opt-single').classList.toggle('selected',p==='single');
+  const optBundle = document.getElementById('opt-bundle'); if(optBundle) optBundle.classList.toggle('selected',p==='bundle');
   updatePrices();
 }
 
