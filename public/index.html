@@ -1,5 +1,4 @@
-var _sv=null;try{_sv=JSON.parse(localStorage.getItem('sv_pending'));}catch(_e){}
-if(window.location.href.indexOf('paid=1')>-1&&_sv&&_sv.img){processedImageData=_sv.img;selectedSpec=_sv.spec;selectedCurrency=_sv.cur||'GBP';localStorage.removeItem('sv_pending');history.replaceState(null,'','/');goToStep(3);setTimeout(function(){document.getElementById('paywall-box').style.display='none';var sb=document.getElementById('success-box');if(sb)sb.classList.add('show');var _c=document.createElement('canvas'),_s=new Image();_s.onload=function(){_c.width=_s.width;_c.height=_s.height;_c.getContext('2d').drawImage(_s,0,0);var _l=document.getElementById('download-link');if(_l){_l.href=_c.toDataURL('image/jpeg',0.95);_l.download='snapvisa-'+(selectedSpec?selectedSpec.id:'photo')+'.jpg';}};_s.src=processedImageData;},400);}else{goToStep(1);}
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -477,6 +476,7 @@ if(window.location.href.indexOf('paid=1')>-1&&_sv&&_sv.img){processedImageData=_
 </style>
 </head>
 <body>
+
 <nav>
   <div class="logo"><div class="logo-dot"></div>SnapVisa</div>
   <span class="tagline">Official-spec visa &amp; passport photos, instantly</span>
@@ -1872,14 +1872,12 @@ function doPayment() {
   }
   var btn = document.getElementById('pay-btn');
   btn.textContent='Redirecting to Stripe…'; btn.disabled=true;
-  localStorage.setItem('sv_pending',JSON.stringify({img:processedImageData,spec:selectedSpec,cur:selectedCurrency}));
-  try{localStorage.setItem('sv_photo',processedImageData);localStorage.setItem('sv_spec',JSON.stringify(selectedSpec));}catch(e){}
+  localStorage.setItem('sv_pending', JSON.stringify({img:processedImageData, spec:selectedSpec, cur:selectedCurrency}));
   fetch('/api/checkout', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
+    method:'POST', headers:{'Content-Type':'application/json'},
     body:JSON.stringify({priceId:selectedPrice, currency:selectedCurrency})
-  }).then(function(r){ return r.json(); }).then(function(data){
-    if(data.url){ window.location.href=data.url; return; }
+  }).then(function(r){return r.json();}).then(function(data){
+    if(data.url){window.location.href=data.url;return;}
     btn.textContent='Pay with Stripe →'; btn.disabled=false;
     alert('Checkout failed: '+(data.error||'unknown'));
   }).catch(function(e){
@@ -1908,6 +1906,25 @@ function resetApp() {
   activeRegion='all';
   document.querySelectorAll('.region-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
   renderGrid(SPECS);
+  var _pd=null;try{_pd=JSON.parse(localStorage.getItem('sv_pending'));}catch(_x){}
+  if(window.location.href.indexOf('paid=1')>-1&&_pd&&_pd.img){
+    processedImageData=_pd.img;selectedSpec=_pd.spec;selectedCurrency=_pd.cur||'GBP';
+    localStorage.removeItem('sv_pending');
+    window.history.replaceState({},'','/');
+    goToStep(3);
+    setTimeout(function(){
+      var pb=document.getElementById('paywall-box');if(pb)pb.style.display='none';
+      var sb=document.getElementById('success-box');if(sb)sb.classList.add('show');
+      var si=new Image();
+      si.onload=function(){var sc=document.createElement('canvas');sc.width=si.width;sc.height=si.height;sc.getContext('2d').drawImage(si,0,0);var dl=document.getElementById('download-link');if(dl){dl.href=sc.toDataURL('image/jpeg',0.95);dl.download='snapvisa-'+(selectedSpec?selectedSpec.id:'photo')+'.jpg';}};
+      si.src=processedImageData;
+    },500);
+  } else {
+    goToStep(1);
+  }
+
+
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
 
 // ═══════════════════════════════════════════
 // PROTECT PREVIEWS
@@ -1916,8 +1933,6 @@ document.addEventListener('contextmenu',e=>{if(e.target.tagName==='CANVAS')e.pre
 document.addEventListener('dragstart',e=>{if(e.target.tagName==='CANVAS')e.preventDefault();});
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='u')){e.preventDefault();}});
 
-
-}
 </script>
 </body>
 </html>
