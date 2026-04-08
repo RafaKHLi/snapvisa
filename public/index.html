@@ -1912,7 +1912,7 @@ function resetApp() {
   document.querySelectorAll('.region-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
   renderGrid(SPECS);
   var _pd=null;try{_pd=JSON.parse(localStorage.getItem('sv_pending'));}catch(_x){}
-  if(window.location.href.indexOf('paid=1')>-1&&_pd&&_pd.img){
+  if(_pd&&_pd.img){  // sv_pending exists = user just paid (set by doPayment before Stripe redirect)
     processedImageData=_pd.img;selectedSpec=_pd.spec;selectedCurrency=_pd.cur||'GBP';
     localStorage.removeItem('sv_pending');window.history.replaceState({},'','/');
     goToStep(3);
