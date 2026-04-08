@@ -1912,9 +1912,11 @@ function resetApp() {
   document.querySelectorAll('.region-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
   renderGrid(SPECS);
   var _pd=null;try{_pd=JSON.parse(localStorage.getItem('sv_pending'));}catch(_x){}
+  console.log('[SnapVisa] init check: _pd=',!!_pd,'img=',!!(_pd&&_pd.img),'processedImageData=',typeof processedImageData);
   if(_pd&&_pd.img){  // sv_pending exists = user just paid (set by doPayment before Stripe redirect)
     processedImageData=_pd.img;selectedSpec=_pd.spec;selectedCurrency=_pd.cur||'GBP';
     localStorage.removeItem('sv_pending');window.history.replaceState({},'','/');
+    console.log('[SnapVisa] restored: processedImageData=',!!processedImageData,'selectedSpec=',selectedSpec?selectedSpec.id:'null');
     goToStep(3);
     setTimeout(function(){
       var pb=document.getElementById('paywall-box');if(pb)pb.style.display='none';
