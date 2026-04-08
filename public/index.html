@@ -1872,7 +1872,22 @@ function doPayment() {
   }
   var btn = document.getElementById('pay-btn');
   btn.textContent='Redirecting to Stripe…'; btn.disabled=true;
-  localStorage.setItem('sv_pending', JSON.stringify({img:processedImageData,spec:selectedSpec,cur:selectedCurrency}));
+  // Compress image before storing to avoid localStorage size limits
+  var _storeImg = processedImageData;
+  try {
+    var _tmpC = document.createElement('canvas'), _tmpI = new Image();
+    _tmpI.src = processedImageData;
+    _tmpC.width = _tmpI.naturalWidth || 600; _tmpC.height = _tmpI.naturalHeight || 800;
+    _tmpC.getContext('2d').drawImage(_tmpI,0,0);
+    _storeImg = _tmpC.toDataURL('image/jpeg', 0.4); // compress heavily for storage
+  } catch(_ce) {}
+  try {
+    localStorage.setItem('sv_pending', JSON.stringify({img:_storeImg,spec:selectedSpec,cur:selectedCurrency}));
+    console.log('sv_pending saved, size:', JSON.stringify({img:_storeImg,spec:selectedSpec,cur:selectedCurrency}).length);
+  } catch(_se) {
+    console.error('localStorage failed:', _se.message);
+    alert('Storage error — payment will still go through but auto-download may not work. Please re-process after payment.');
+  }
   fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({priceId:selectedPrice,currency:selectedCurrency})}).then(function(r){return r.json();}).then(function(d){if(d.url){window.location.href=d.url;return;}btn.textContent='Pay with Stripe →';btn.disabled=false;alert('Checkout failed: '+(d.error||'unknown'));}).catch(function(e){btn.textContent='Pay with Stripe →';btn.disabled=false;alert('Payment error: '+e.message);});
 }
 
