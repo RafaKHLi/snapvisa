@@ -1915,7 +1915,7 @@ function resetApp() {
   goToStep(1);
 }
 
-// Payment detection — runs once on page load after DOM is ready
+// Post-payment: Stripe sends to /index.html?paid=1, load event restores photo
 window.addEventListener('load', function() {
   var hasPaid = window.location.search.indexOf('paid=1') > -1;
   var _pd = null;
@@ -1947,6 +1947,7 @@ window.addEventListener('load', function() {
     }, 300);
   }
 });
+
 
 function delay(ms){return new Promise(r=>setTimeout(r,ms));}
 
