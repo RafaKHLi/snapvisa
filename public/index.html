@@ -1872,18 +1872,8 @@ function doPayment() {
   }
   var btn = document.getElementById('pay-btn');
   btn.textContent='Redirecting to Stripe…'; btn.disabled=true;
-  localStorage.setItem('sv_pending', JSON.stringify({img:processedImageData, spec:selectedSpec, cur:selectedCurrency}));
-  fetch('/api/checkout', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({priceId:selectedPrice, currency:selectedCurrency})
-  }).then(function(r){return r.json();}).then(function(data){
-    if(data.url){window.location.href=data.url;return;}
-    btn.textContent='Pay with Stripe →'; btn.disabled=false;
-    alert('Checkout failed: '+(data.error||'unknown'));
-  }).catch(function(e){
-    btn.textContent='Pay with Stripe →'; btn.disabled=false;
-    alert('Payment error: '+e.message);
-  });
+  localStorage.setItem('sv_pending', JSON.stringify({img:processedImageData,spec:selectedSpec,cur:selectedCurrency}));
+  fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({priceId:selectedPrice,currency:selectedCurrency})}).then(function(r){return r.json();}).then(function(d){if(d.url){window.location.href=d.url;return;}btn.textContent='Pay with Stripe →';btn.disabled=false;alert('Checkout failed: '+(d.error||'unknown'));}).catch(function(e){btn.textContent='Pay with Stripe →';btn.disabled=false;alert('Payment error: '+e.message);});
 }
 
 
@@ -1909,8 +1899,7 @@ function resetApp() {
   var _pd=null;try{_pd=JSON.parse(localStorage.getItem('sv_pending'));}catch(_x){}
   if(window.location.href.indexOf('paid=1')>-1&&_pd&&_pd.img){
     processedImageData=_pd.img;selectedSpec=_pd.spec;selectedCurrency=_pd.cur||'GBP';
-    localStorage.removeItem('sv_pending');
-    window.history.replaceState({},'','/');
+    localStorage.removeItem('sv_pending');window.history.replaceState({},'','/');
     goToStep(3);
     setTimeout(function(){
       var pb=document.getElementById('paywall-box');if(pb)pb.style.display='none';
@@ -1919,10 +1908,8 @@ function resetApp() {
       si.onload=function(){var sc=document.createElement('canvas');sc.width=si.width;sc.height=si.height;sc.getContext('2d').drawImage(si,0,0);var dl=document.getElementById('download-link');if(dl){dl.href=sc.toDataURL('image/jpeg',0.95);dl.download='snapvisa-'+(selectedSpec?selectedSpec.id:'photo')+'.jpg';}};
       si.src=processedImageData;
     },500);
-  } else {
-    goToStep(1);
-  }
-
+  } else { goToStep(1); }
+}
 
 function delay(ms){return new Promise(r=>setTimeout(r,ms));}
 
