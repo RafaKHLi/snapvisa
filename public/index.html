@@ -1912,42 +1912,41 @@ function resetApp() {
   activeRegion='all';
   document.querySelectorAll('.region-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
   renderGrid(SPECS);
-  // Payment detection - window.load ensures DOM + all JS ready before goToStep
-  window.addEventListener('load', function() {
-    var hasPaid = window.location.search.indexOf('paid=1') > -1;
-    var _pd = null;
-    try { _pd = JSON.parse(localStorage.getItem('sv_pending')); } catch(_x) {}
-    if(hasPaid && _pd && _pd.img) {
-      processedImageData = _pd.img;
-      selectedSpec = _pd.spec;
-      selectedCurrency = _pd.cur || 'GBP';
-      localStorage.removeItem('sv_pending');
-      window.history.replaceState({}, '', '/');
-      goToStep(3);
-      setTimeout(function() {
-        var pb = document.getElementById('paywall-box');
-        if(pb) pb.style.display = 'none';
-        var sb = document.getElementById('success-box');
-        if(sb) sb.classList.add('show');
-        var si = new Image();
-        si.onload = function() {
-          var sc = document.createElement('canvas');
-          sc.width=si.width; sc.height=si.height;
-          sc.getContext('2d').drawImage(si,0,0);
-          var dl = document.getElementById('download-link');
-          if(dl) {
-            dl.href = sc.toDataURL('image/jpeg',0.95);
-            dl.download = 'snapvisa-'+(selectedSpec?selectedSpec.id:'photo')+'.jpg';
-          }
-        };
-        si.src = processedImageData;
-      }, 300);
-    } else {
-      goToStep(1);
-    }
-  });
-
+  goToStep(1);
 }
+
+// Payment detection — runs once on page load after DOM is ready
+window.addEventListener('load', function() {
+  var hasPaid = window.location.search.indexOf('paid=1') > -1;
+  var _pd = null;
+  try { _pd = JSON.parse(localStorage.getItem('sv_pending')); } catch(_x) {}
+  if (hasPaid && _pd && _pd.img) {
+    processedImageData = _pd.img;
+    selectedSpec = _pd.spec;
+    selectedCurrency = _pd.cur || 'GBP';
+    localStorage.removeItem('sv_pending');
+    window.history.replaceState({}, '', '/');
+    goToStep(3);
+    setTimeout(function() {
+      var pb = document.getElementById('paywall-box');
+      if (pb) pb.style.display = 'none';
+      var sb = document.getElementById('success-box');
+      if (sb) sb.classList.add('show');
+      var si = new Image();
+      si.onload = function() {
+        var sc = document.createElement('canvas');
+        sc.width = si.width; sc.height = si.height;
+        sc.getContext('2d').drawImage(si, 0, 0);
+        var dl = document.getElementById('download-link');
+        if (dl) {
+          dl.href = sc.toDataURL('image/jpeg', 0.95);
+          dl.download = 'snapvisa-' + (selectedSpec ? selectedSpec.id : 'photo') + '.jpg';
+        }
+      };
+      si.src = processedImageData;
+    }, 300);
+  }
+});
 
 function delay(ms){return new Promise(r=>setTimeout(r,ms));}
 
