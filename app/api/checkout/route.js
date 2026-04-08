@@ -39,7 +39,7 @@ export async function POST(request) {
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${baseUrl}/?paid=1`,
+      success_url: 'https://www.snapvisa.co.uk/index.html?paid=1',
       cancel_url: `${baseUrl}`,
     })
 
